@@ -7,17 +7,17 @@ typedef std::vector<MatrixXf> Img;
 
 class Matrices {
 public:
-    static Img crossCorrelation(const Img& image, const Img& kernels) {
+    static MatrixXf crossCorrelation(const Img& image, const Img& kernels) {
         const uint16_t kernel_sz = kernels.at(0).rows(); // Could be cols instead, should be n x n though
         const uint16_t convolvedRows = image.at(0).rows() - kernel_sz + 1;
         const uint16_t convolvedCols = image.at(0).cols() - kernel_sz + 1;
-        std::vector<MatrixXf> convolved(image.size(), MatrixXf::Zero(convolvedRows, convolvedCols));
+        MatrixXf convolved = MatrixXf::Zero(convolvedRows, convolvedCols);
         for (int i = 0; i < kernels.size(); i++) {
             const MatrixXf& oneColorImg = image.at(i);
             const MatrixXf& kernel = kernels.at(i);
             for (int row = 0; row < convolvedRows; row++) {
                 for (int col = 0; col < convolvedCols; col++) {
-                    convolved.at(i)(row, col) = convolve(oneColorImg.block(row, col, kernel_sz, kernel_sz), kernel);
+                    convolved(row, col) += convolve(oneColorImg.block(row, col, kernel_sz, kernel_sz), kernel);
                 }
             }
         }
@@ -45,14 +45,13 @@ public:
     }
 };
 
-template <uint8_t out_channels>
 class ConvLayer {
 private:
     std::vector<Img> kernels;
     const uint8_t kernel_sz, stride, padding;
 
 public:
-    ConvLayer(const uint8_t kernel_sz, const uint8_t stride, const uint8_t padding) : kernels(out_channels), kernel_sz(kernel_sz), stride(stride), padding(padding) {
+    ConvLayer(const uint8_t out_channels, const uint8_t kernel_sz, const uint8_t stride, const uint8_t padding) : kernels(out_channels), kernel_sz(kernel_sz), stride(stride), padding(padding) {
         for (int i = 0; i < out_channels; i++) {
             kernels[i] = Matrices::initKernel(kernel_sz);
         }
@@ -68,20 +67,39 @@ public:
         }
     }
 
-    std::array<Img, out_channels> activation(std::vector<Img> input) {
-        std::array<Img, out_channels> output;
+    Img activation(const std::vector<Img>& input) const {
+        Img output(kernel_sz);
         for (const Img& kernel : kernels) {
             for (const Img& img : input) {
-                const Img convolved = Matrices::crossCorrelation(img, kernel);
-
+                output.push_back(Matrices::crossCorrelation(img, kernel));
             }
         }
+        return output;
     }
 };
 
 int main() {
-    const ConvLayer layer(2, 3, 1, 0);
-    layer.info();
+    Img img(3);
+    for (MatrixXf& mat : img) {
+        mat.resize(6, 6);
+        mat << 10, 10, 10, 0, 0, 0,
+               10, 10, 10, 0, 0, 0,
+               10, 10, 10, 0, 0, 0,
+               10, 10, 10, 0, 0, 0,
+               10, 10, 10, 0, 0, 0,
+               10, 10, 10, 0, 0, 0;
+    }
+
+    Img kernel(3);
+    for (MatrixXf& mat : kernel) {
+        mat.resize(3, 3);
+        mat << 1, 0, -1,
+               1, 0, -1,
+               1, 0, -1;
+    }
+
+    const MatrixXf result = Matrices::crossCorrelation(img, kernel);
+    std::cout << result << std::endl;
 
     exit(0);
 }
