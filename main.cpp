@@ -1,23 +1,23 @@
 #include <iostream>
 #include <Eigen/Dense>
 
-using Eigen::Matrix;
 using Eigen::MatrixXf;
-class MatrixMath {
+
+typedef std::vector<MatrixXf> Img;
+
+class Matrices {
 public:
-    static std::array<MatrixXf, 3> convolveRGB(const std::array<MatrixXf, 3>& image, const std::array<MatrixXf, 3>& kernels) {
-        const u_int16_t kernel_sz = kernels.at(0).rows(); // Could be cols instead, should be n x n though
-        const u_int16_t convolvedRows = image.at(0).rows() - kernel_sz + 1;
-        const u_int16_t convolvedCols = image.at(0).cols() - kernel_sz + 1;
-        std::array<Eigen::MatrixXf, 3> convolved;
-        for (MatrixXf& matrix : convolved) {
-            matrix.resize(convolvedRows, convolvedCols);
-        }
+    static Img crossCorrelation(const Img& image, const Img& kernels) {
+        const uint16_t kernel_sz = kernels.at(0).rows(); // Could be cols instead, should be n x n though
+        const uint16_t convolvedRows = image.at(0).rows() - kernel_sz + 1;
+        const uint16_t convolvedCols = image.at(0).cols() - kernel_sz + 1;
+        std::vector<MatrixXf> convolved(image.size(), MatrixXf::Zero(convolvedRows, convolvedCols));
         for (int i = 0; i < kernels.size(); i++) {
             const MatrixXf& oneColorImg = image.at(i);
+            const MatrixXf& kernel = kernels.at(i);
             for (int row = 0; row < convolvedRows; row++) {
                 for (int col = 0; col < convolvedCols; col++) {
-                    convolved.at(i)(row, col) = convolve(oneColorImg.block(row, col, kernel_sz, kernel_sz), kernels.at(i));
+                    convolved.at(i)(row, col) = convolve(oneColorImg.block(row, col, kernel_sz, kernel_sz), kernel);
                 }
             }
         }
@@ -32,28 +32,56 @@ public:
         return kernel.cwiseProduct(input).sum();
     }
 
-    static void printImg(const std::array<MatrixXf, 3>& matrix) {
+    static void printImg(const Img& matrix) {
         for (const MatrixXf& channel : matrix) {
             std::cout << channel << "\n" << std::endl;
         }
         std::cout << std::endl;
     }
+
+    static Img initKernel(const uint8_t kernel_sz) {
+        std::vector<MatrixXf> img(kernel_sz, MatrixXf::Random(kernel_sz, kernel_sz));
+        return img;
+    }
+};
+
+template <uint8_t out_channels>
+class ConvLayer {
+private:
+    std::vector<Img> kernels;
+    const uint8_t kernel_sz, stride, padding;
+
+public:
+    ConvLayer(const uint8_t kernel_sz, const uint8_t stride, const uint8_t padding) : kernels(out_channels), kernel_sz(kernel_sz), stride(stride), padding(padding) {
+        for (int i = 0; i < out_channels; i++) {
+            kernels[i] = Matrices::initKernel(kernel_sz);
+        }
+    }
+
+     void info() const {
+        std::cout << "Kernels: " << static_cast<int>(kernel_sz) << "\tStride: " << static_cast<int>(stride) << "\tPadding: " << static_cast<int>(padding) << std::endl;
+        int kernelCounter = 0;
+        for (const Img& img : kernels) {
+            kernelCounter++;
+            std::cout << "Kernel " << kernelCounter << " : " << std::endl;
+            Matrices::printImg(img);
+        }
+    }
+
+    std::array<Img, out_channels> activation(std::vector<Img> input) {
+        std::array<Img, out_channels> output;
+        for (const Img& kernel : kernels) {
+            for (const Img& img : input) {
+                const Img convolved = Matrices::crossCorrelation(img, kernel);
+
+            }
+        }
+    }
 };
 
 int main() {
-    std::cout << "The code's been updated" << std::endl;
-    std::array<MatrixXf, 3> rgbImage;
-    for (int i = 0; i < 3; i++) {
-        rgbImage.at(i).resize(3, 3);
-        rgbImage.at(i) << 1, 2, 3, 4, 5, 6, 7, 8, 9;
-    }
-    std::array<MatrixXf, 3> smootherKernel;
-    for (int i = 0; i < 3; i++) {
-        smootherKernel.at(i).resize(2, 2);
-        smootherKernel.at(i) << 0.25, 0.25, 0.25, 0.25;
-    }
-
-    const std::array<MatrixXf, 3> smoothed = MatrixMath::convolveRGB(rgbImage, smootherKernel);
+    const ConvLayer layer(2, 3, 1, 0);
+    layer.info();
 
     exit(0);
 }
