@@ -1,0 +1,37 @@
+# CMake build directories
+cmake-build-*/
+build/
+[Cc]MakeCache.txt
+[Cc]MakeFiles/
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+
+# Weird executable
+ManualConvNet
+
+# CLion project files
+.idea/
+*.iml
+
+# Executables and binaries
+*.o
+*.obj
+*.so
+*.dll
+*.dylib
+*.a
+*.lib
+*.exe
+*.out
+*.app
+
+# Logs and misc
+*.log
+*.swp
+*.DS_Store
+
+# Other generated files
+Testing/
+CTestTestfile.cmake
+Makefile
