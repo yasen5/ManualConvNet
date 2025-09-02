@@ -1,5 +1,4 @@
 #include <iostream>
-#include <format>
 #include <Eigen/Dense>
 
 using Eigen::MatrixXf;
@@ -33,6 +32,27 @@ public:
         }
 
         return kernel.cwiseProduct(input).sum();
+    }
+
+    static MatrixXf maxPool(const MatrixXf& mat, const uint8_t padding, const uint8_t stride, const uint8_t kernel_sz) {
+        const uint16_t convolvedRows = (mat.rows() + 2 * padding - kernel_sz) / stride + 1;
+        const uint16_t convolvedCols = (mat.cols() + 2 * padding - kernel_sz) / stride + 1;
+        MatrixXf pooled = MatrixXf::Zero(convolvedRows + 2 * padding, convolvedCols + 2 * padding);
+        for (int row = 0; row < convolvedRows; row++) {
+            for (int col = 0; col < convolvedCols; col++) {
+                float greatest = -std::numeric_limits<float>::infinity();
+                for (int i = 0; i < kernel_sz; i++) {
+                    for (int j = 0; j < kernel_sz; j++) {
+                        const float val = mat(row * stride + i, col * stride + j);
+                        if (val > greatest) {
+                            greatest = val;
+                        }
+                    }
+                }
+                pooled(row, col) = greatest;
+            }
+        }
+        return pooled;
     }
 
     static void printImg(const Img& matrix) {
@@ -82,26 +102,16 @@ public:
 };
 
 int main() {
-    Img img(3);
+    Img img(1);
     for (MatrixXf& mat : img) {
-        mat.resize(6, 6);
-        mat << 10, 10, 10, 0, 0, 0,
-               10, 10, 10, 0, 0, 0,
-               10, 10, 10, 0, 0, 0,
-               10, 10, 10, 0, 0, 0,
-               10, 10, 10, 0, 0, 0,
-               10, 10, 10, 0, 0, 0;
+        mat.resize(4, 4);
+        mat << 1, 3, 2, 1,
+               2, 9, 1, 1,
+               1, 3, 2, 3,
+               5, 6, 1, 2;
     }
 
-    Img kernel(3);
-    for (MatrixXf& mat : kernel) {
-        mat.resize(3, 3);
-        mat << 1, 0, -1,
-               1, 0, -1,
-               1, 0, -1;
-    }
-
-    const MatrixXf result = Matrices::crossCorrelation(img, kernel, 2, 0);
+    const MatrixXf result = Matrices::maxPool(img.at(0), 0, 2, 2);
 
     std::cout << result << std::endl;
 
