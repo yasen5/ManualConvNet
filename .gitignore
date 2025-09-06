@@ -7,6 +7,9 @@ cmake_install.cmake
 install_manifest.txt
 compile_commands.json
 
+# Data
+Data/
+
 # Weird executable
 ManualConvNet
 

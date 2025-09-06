@@ -1,5 +1,6 @@
 #include <iostream>
 #include <Eigen/Dense>
+#include "dataset.h"
 
 using Eigen::MatrixXf;
 
@@ -102,18 +103,10 @@ public:
 };
 
 int main() {
-    Img img(1);
-    for (MatrixXf& mat : img) {
-        mat.resize(4, 4);
-        mat << 1, 3, 2, 1,
-               2, 9, 1, 1,
-               1, 3, 2, 3,
-               5, 6, 1, 2;
+    Dataset data("/Users/yasen/ClionProjects/ManualConvNet/Data/train.csv", "/Users/yasen/ClionProjects/ManualConvNet/Data/literally nothing lol", "/Users/yasen/ClionProjects/ManualConvNet/Data/test.csv");
+    for (const ClassifiedImg& img : data.getData(TRAIN)) {
+        // std::cout << "Category: " << img.category << "\n" << img.img << std::endl;
     }
-
-    const MatrixXf result = Matrices::maxPool(img.at(0), 0, 2, 2);
-
-    std::cout << result << std::endl;
 
     exit(0);
 }
