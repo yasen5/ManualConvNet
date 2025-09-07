@@ -39,9 +39,5 @@ void Visualizer::display(const std::string &name, const Eigen::MatrixXf &mat) {
 
 void Visualizer::displayColoredNegatives(const std::string &name, const Eigen::MatrixXf &mat) {
 
-}// for (int row = 0; row < normalized.rows(); row++) {
-//     for (int col = 0; col < normalized.cols(); col++) {
-//         normalized(row, col) = abs(normalized(row, col));
-//     }
-// }
+}
 
