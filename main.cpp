@@ -33,6 +33,9 @@ public:
     }
 
     static float convolve(const MatrixXf& input, const MatrixXf& kernel) {
+        if (input.sum() != 0) {
+            std::cout;
+        }
         if (kernel.rows() != input.rows() || kernel.cols() != input.cols()) {
             throw std::invalid_argument("Input size of (" + std::to_string(input.rows()) + ", " + std::to_string(input.cols()) + ") does not match input kernel size of (" + std::to_string(kernel.rows()) + ", " + std::to_string(kernel.cols()) + ")");
         }
@@ -43,7 +46,7 @@ public:
                 sum += input(row, col) * kernel(row, col);
             }
         }
-        return abs(sum) / 3; // TODO remove this for actual conv net stuff
+        return sum;
     }
 
     static MatrixXf maxPool(const MatrixXf& mat, const uint8_t padding, const uint8_t stride, const uint8_t kernel_sz) {

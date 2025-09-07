@@ -4,18 +4,33 @@
 
 #include "visualizer.h"
 
+#include <iostream>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/core/eigen.hpp>
 
 void Visualizer::display(const std::string &name, const Eigen::MatrixXf &mat) {
-    cv::Mat cv_image;
-    eigen2cv(mat, cv_image);
+    float minVal = mat.minCoeff();
+    float maxVal = mat.maxCoeff();
 
+    Eigen::MatrixXf normalized;
+    if (maxVal > minVal) {
+        normalized = ((mat.array() - minVal) / (maxVal - minVal)) * 255.0f;
+    } else {
+        normalized = Eigen::MatrixXf::Constant(mat.rows(), mat.cols(), 127.0f);
+    }
+
+    cv::Mat cv_image;
+    eigen2cv(normalized, cv_image);
+
+    cv::Mat cv_image_8u;
+    cv_image.convertTo(cv_image_8u, CV_8UC1);
+
+    // Display
     namedWindow(name, cv::WINDOW_NORMAL);
     cv::Mat display;
-    resize(cv_image, display, cv::Size(idealWindowSize, idealWindowSize), 0, 0, cv::INTER_NEAREST);
-    imshow(name, cv_image);
+    resize(cv_image_8u, display, cv::Size(idealWindowSize, idealWindowSize), 0, 0, cv::INTER_NEAREST);
+    imshow(name, display);
     resizeWindow(name, cv::Size(idealWindowSize, idealWindowSize));
 
     cv::waitKey(0);
@@ -24,6 +39,9 @@ void Visualizer::display(const std::string &name, const Eigen::MatrixXf &mat) {
 
 void Visualizer::displayColoredNegatives(const std::string &name, const Eigen::MatrixXf &mat) {
 
-
-}
+}// for (int row = 0; row < normalized.rows(); row++) {
+//     for (int col = 0; col < normalized.cols(); col++) {
+//         normalized(row, col) = abs(normalized(row, col));
+//     }
+// }
 
