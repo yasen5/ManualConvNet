@@ -1,10 +1,9 @@
 #include "dataset.h"
 #include <opencv2/core/eigen.hpp>
-#include <opencv2/highgui.hpp>
-#include <opencv2/imgcodecs.hpp>
 #include <opencv2/core.hpp>
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 Dataset::Dataset(const std::string &trainFile, const std::string &validFile, const std::string &testFile):
     images{ readData(trainFile), readData(validFile), readData(testFile) } {};
@@ -70,13 +69,6 @@ std::vector<ClassifiedImg> Dataset::readData(const std::string &fileName) {
             break;
         }
     }
-
-    cv::Mat cv_image;
-    eigen2cv(images.at(0).img, cv_image);
-
-    // imshow("Window", cv_image);
-    // cv::waitKey(0);
-    // cv::destroyAllWindows();
 
     return images;
 }

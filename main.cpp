@@ -1,6 +1,9 @@
 #include <iostream>
-#include <Eigen/Dense>
 #include "dataset.h"
+#include <opencv2/core/eigen.hpp>
+#include <opencv2/core.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/opencv.hpp>
 
 using Eigen::MatrixXf;
 
@@ -32,7 +35,13 @@ public:
             throw std::invalid_argument("Input size of (" + std::to_string(input.rows()) + ", " + std::to_string(input.cols()) + ") does not match input kernel size of (" + std::to_string(kernel.rows()) + ", " + std::to_string(kernel.cols()) + ")");
         }
 
-        return kernel.cwiseProduct(input).sum();
+        float sum = 0;
+        for (int row = 0; row < kernel.rows(); row++) {
+            for (int col = 0; col < kernel.cols(); col++) {
+                sum += input(row, col) * kernel(row, col);
+            }
+        }
+        return abs(sum) / 3; // TODO remove this for actual conv net stuff
     }
 
     static MatrixXf maxPool(const MatrixXf& mat, const uint8_t padding, const uint8_t stride, const uint8_t kernel_sz) {
@@ -104,9 +113,46 @@ public:
 
 int main() {
     Dataset data("/Users/yasen/ClionProjects/ManualConvNet/Data/train.csv", "/Users/yasen/ClionProjects/ManualConvNet/Data/literally nothing lol", "/Users/yasen/ClionProjects/ManualConvNet/Data/test.csv");
-    for (const ClassifiedImg& img : data.getData(TRAIN)) {
-        // std::cout << "Category: " << img.category << "\n" << img.img << std::endl;
-    }
+    MatrixXf weird(3, 3);
+    weird << 1, 3, 1,
+              3, 10, 3,
+              1,3, 1;
+    MatrixXf horizontalEdgeDetector(3, 3);
+    horizontalEdgeDetector << 1, 1, 1,
+              0, 0, 0,
+              -1, -1, -1;
+    MatrixXf verticalEdgeDetector(3, 3);
+    verticalEdgeDetector << -1, 0, 1,
+              -1, 0, 1,
+              -1, 0, 1;
+    MatrixXf smoother(3, 3);
+    smoother << 1.0/9.0, 1.0/9.0, 1.0/9.0,
+              1.0/9.0, 1.0/9.0, 1.0/9.0,
+              1.0/9.0, 1.0/9.0, 1.0/9.0;
+    MatrixXf temp(5, 5);
+    temp << 255, 0, 0, 255, 0,
+            255, 0, 0, 255, 0,
+            255, 0, 0, 255, 0,
+            255, 0, 0, 255, 0,
+            255, 0, 0, 255, 0;
+    MatrixXf convolved = Matrices::crossCorrelation(Img{ data.getData(TRAIN).at(0).img }, Img { horizontalEdgeDetector }, 1, 0);
+    cv::Mat cv_image;
+    eigen2cv(convolved, cv_image);
+
+    cv::Mat original_image;
+    eigen2cv(data.getData(TRAIN).at(0).img, original_image);
+
+    constexpr int scale_factor = 96;
+    const std::string windowName = "ORIGINAL IMAGE";
+    namedWindow(windowName, cv::WINDOW_NORMAL);
+    imshow(windowName, original_image);
+    const std::string secondWindowName = "CONVOLVED";
+    namedWindow(secondWindowName, cv::WINDOW_NORMAL);
+    cv::Mat display;
+    resize(cv_image, display, cv::Size(300, 300), 0, 0, cv::INTER_NEAREST);
+    imshow(secondWindowName, display);
+    cv::waitKey(0);
+    cv::destroyAllWindows();
 
     exit(0);
 }
