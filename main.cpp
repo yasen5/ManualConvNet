@@ -33,9 +33,6 @@ public:
     }
 
     static float convolve(const MatrixXf& input, const MatrixXf& kernel) {
-        if (input.sum() != 0) {
-            std::cout;
-        }
         if (kernel.rows() != input.rows() || kernel.cols() != input.cols()) {
             throw std::invalid_argument("Input size of (" + std::to_string(input.rows()) + ", " + std::to_string(input.cols()) + ") does not match input kernel size of (" + std::to_string(kernel.rows()) + ", " + std::to_string(kernel.cols()) + ")");
         }
@@ -140,8 +137,14 @@ int main() {
             255, 0, 0, 255, 0,
             255, 0, 0, 255, 0,
             255, 0, 0, 255, 0;
-    MatrixXf convolved = Matrices::crossCorrelation(Img{ data.getData(TRAIN).at(0).img }, Img { horizontalEdgeDetector }, 1, 0);
-    Visualizer::display("Convolved", convolved);
+    MatrixXf convolved = Matrices::crossCorrelation(Img{ data.getData(TRAIN).at(0).img }, Img { weird }, 1, 0);
+    Visualizer::display("Weird", convolved);
+    convolved = Matrices::crossCorrelation(Img{ data.getData(TRAIN).at(0).img }, Img { smoother }, 1, 0);
+    Visualizer::display("Smoother", convolved);
+    convolved = Matrices::crossCorrelation(Img{ data.getData(TRAIN).at(0).img }, Img { verticalEdgeDetector }, 1, 0);
+    Visualizer::display("Vertical", convolved);
+    convolved = Matrices::crossCorrelation(Img{ data.getData(TRAIN).at(0).img }, Img { horizontalEdgeDetector }, 1, 0);
+    Visualizer::display("Horizontal", convolved);
 
     exit(0);
 }

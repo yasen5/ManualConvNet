@@ -37,6 +37,7 @@ void Visualizer::display(const std::string &name, const Eigen::MatrixXf &mat) {
     cv::destroyAllWindows();
 }
 
+// TODO display negatives as red and positives as blue
 void Visualizer::displayColoredNegatives(const std::string &name, const Eigen::MatrixXf &mat) {
 
 }
