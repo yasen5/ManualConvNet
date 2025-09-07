@@ -6,7 +6,8 @@ set(CMAKE_CXX_STANDARD 23)
 find_package(Eigen3 3.4 REQUIRED NO_MODULE)
 find_package(OpenCV REQUIRED)
 
-add_executable(ManualConvNet main.cpp dataset.cpp)
+add_executable(ManualConvNet main.cpp dataset.cpp visualizer.cpp
+        visualizer.h)
 
 # Modern way (Eigen uses imported target, OpenCV often does not)
 target_link_libraries(ManualConvNet

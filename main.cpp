@@ -5,6 +5,8 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
 
+#include "visualizer.h"
+
 using Eigen::MatrixXf;
 
 typedef std::vector<MatrixXf> Img;
@@ -136,23 +138,7 @@ int main() {
             255, 0, 0, 255, 0,
             255, 0, 0, 255, 0;
     MatrixXf convolved = Matrices::crossCorrelation(Img{ data.getData(TRAIN).at(0).img }, Img { horizontalEdgeDetector }, 1, 0);
-    cv::Mat cv_image;
-    eigen2cv(convolved, cv_image);
-
-    cv::Mat original_image;
-    eigen2cv(data.getData(TRAIN).at(0).img, original_image);
-
-    constexpr int scale_factor = 96;
-    const std::string windowName = "ORIGINAL IMAGE";
-    namedWindow(windowName, cv::WINDOW_NORMAL);
-    imshow(windowName, original_image);
-    const std::string secondWindowName = "CONVOLVED";
-    namedWindow(secondWindowName, cv::WINDOW_NORMAL);
-    cv::Mat display;
-    resize(cv_image, display, cv::Size(300, 300), 0, 0, cv::INTER_NEAREST);
-    imshow(secondWindowName, display);
-    cv::waitKey(0);
-    cv::destroyAllWindows();
+    Visualizer::display("Convolved", convolved);
 
     exit(0);
 }
