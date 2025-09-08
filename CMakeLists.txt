@@ -8,7 +8,8 @@ find_package(OpenCV REQUIRED)
 
 add_executable(ManualConvNet main.cpp dataset.cpp visualizer.cpp
         visualizer.h
-        matrices.cpp)
+        matrices.cpp
+        conv_layer.h)
 
 # Modern way (Eigen uses imported target, OpenCV often does not)
 target_link_libraries(ManualConvNet
