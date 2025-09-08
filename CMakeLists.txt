@@ -7,7 +7,8 @@ find_package(Eigen3 3.4 REQUIRED NO_MODULE)
 find_package(OpenCV REQUIRED)
 
 add_executable(ManualConvNet main.cpp dataset.cpp visualizer.cpp
-        visualizer.h)
+        visualizer.h
+        matrices.cpp)
 
 # Modern way (Eigen uses imported target, OpenCV often does not)
 target_link_libraries(ManualConvNet
