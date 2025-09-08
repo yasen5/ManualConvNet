@@ -65,8 +65,3 @@ void Matrices::printImg(const Img& matrix) {
     }
     std::cout << std::endl;
 }
-
-Img Matrices::initKernel(const uint8_t kernel_sz) {
-    std::vector<MatrixXf> img(kernel_sz, MatrixXf::Random(kernel_sz, kernel_sz));
-    return img;
-}
