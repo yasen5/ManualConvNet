@@ -4,6 +4,8 @@
 
 #include "maxpool_layer.h"
 
+#include <iostream>
+
 MaxpoolLayer::MaxpoolLayer(const uint8_t padding, const uint8_t stride, const uint8_t kernel_sz) : padding(padding), stride(stride), kernel_sz(kernel_sz) {}
 
 Img MaxpoolLayer::activation(const Img& input) const {
@@ -12,9 +14,11 @@ Img MaxpoolLayer::activation(const Img& input) const {
     Img pooled = Img(input.size(), MatrixXf::Zero(convolvedRows, convolvedCols));
     for (int i = 0; i < input.size(); i++) {
         const MatrixXf& channel = input.at(i);
-        for (int row = 0; row < channel.rows() - kernel_sz + 1; row++) {
-            for (int col = 0; col < channel.cols() - kernel_sz + 1; col++) {
-                pooled.at(i)(row, col) = channel.block(row, col, kernel_sz, kernel_sz).maxCoeff();
+        MatrixXf paddedImg = MatrixXf::Zero(channel.rows() + 2 * padding, channel.cols() + 2 * padding);
+        paddedImg.block(padding, padding, channel.rows(), channel.cols()) = channel;
+        for (int row = 0; row < paddedImg.rows() - kernel_sz + 1; row++) {
+            for (int col = 0; col < paddedImg.cols() - kernel_sz + 1; col++) {
+                pooled.at(i)(row, col) = paddedImg.block(row, col, kernel_sz, kernel_sz).maxCoeff();
             }
         }
     }
