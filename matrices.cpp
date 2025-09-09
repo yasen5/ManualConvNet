@@ -38,27 +38,6 @@ float Matrices::convolve(const MatrixXf& input, const MatrixXf& kernel) {
     return sum;
 }
 
-MatrixXf Matrices::maxPool(const MatrixXf& mat, const uint8_t padding, const uint8_t stride, const uint8_t kernel_sz) {
-    const uint16_t convolvedRows = (mat.rows() + 2 * padding - kernel_sz) / stride + 1;
-    const uint16_t convolvedCols = (mat.cols() + 2 * padding - kernel_sz) / stride + 1;
-    MatrixXf pooled = MatrixXf::Zero(convolvedRows + 2 * padding, convolvedCols + 2 * padding);
-    for (int row = 0; row < convolvedRows; row++) {
-        for (int col = 0; col < convolvedCols; col++) {
-            float greatest = -std::numeric_limits<float>::infinity();
-            for (int i = 0; i < kernel_sz; i++) {
-                for (int j = 0; j < kernel_sz; j++) {
-                    const float val = mat(row * stride + i, col * stride + j);
-                    if (val > greatest) {
-                        greatest = val;
-                    }
-                }
-            }
-            pooled(row, col) = greatest;
-        }
-    }
-    return pooled;
-}
-
 void Matrices::printImg(const Img& matrix) {
     for (const MatrixXf& channel : matrix) {
         std::cout << channel << "\n" << std::endl;

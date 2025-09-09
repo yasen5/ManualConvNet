@@ -16,9 +16,9 @@ Img MaxpoolLayer::activation(const Img& input) const {
         const MatrixXf& channel = input.at(i);
         MatrixXf paddedImg = MatrixXf::Zero(channel.rows() + 2 * padding, channel.cols() + 2 * padding);
         paddedImg.block(padding, padding, channel.rows(), channel.cols()) = channel;
-        for (int row = 0; row < paddedImg.rows() - kernel_sz + 1; row++) {
-            for (int col = 0; col < paddedImg.cols() - kernel_sz + 1; col++) {
-                pooled.at(i)(row, col) = paddedImg.block(row, col, kernel_sz, kernel_sz).maxCoeff();
+        for (int row = 0; row < convolvedRows; row++) {
+            for (int col = 0; col < convolvedCols; col++) {
+                pooled.at(i)(row, col) = paddedImg.block(row * stride, col * stride, kernel_sz, kernel_sz).maxCoeff();
             }
         }
     }

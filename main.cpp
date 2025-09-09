@@ -20,8 +20,8 @@ int main() {
                 9, 10, 11, 12,
                 13, 14, 15, 16;
     dummyImg.at(0) = unpooled;
-    MaxpoolLayer pool(1, 1, 3);
-    dummyImg = pool.activation(dummyImg);
-    std::cout << dummyImg.at(0) << std::endl;
+    MaxpoolLayer pool(1, 3, 3);
+    MatrixXf newMat = pool.activation(dummyImg).at(0);
+    std::cout << newMat << std::endl;
     exit(0);
 }
