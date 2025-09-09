@@ -5,12 +5,23 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
 
+#include "conv_layer.h"
 #include "matrices.h"
+#include "maxpool_layer.h"
 #include "visualizer.h"
 
 using Eigen::MatrixXf;
 
 int main() {
-    Dataset data("/Users/yasen/ClionProjects/ManualConvNet/Data/train.csv", "/Users/yasen/ClionProjects/ManualConvNet/Data/literally nothing lol", "/Users/yasen/ClionProjects/ManualConvNet/Data/test.csv");
+    Img dummyImg(3, MatrixXf::Zero(4, 4));
+    MatrixXf unpooled(4, 4);
+    unpooled << 1, 2, 3, 4,
+                5, 6, 7, 8,
+                9, 10, 11, 12,
+                13, 14, 15, 16;
+    dummyImg.at(0) = unpooled;
+    MaxpoolLayer pool(1, 3, 3);
+    MatrixXf newMat = pool.activation(dummyImg).at(0);
+    std::cout << newMat << std::endl;
     exit(0);
 }
