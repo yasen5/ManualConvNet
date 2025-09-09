@@ -9,7 +9,7 @@
 #include "layer.h"
 
 
-class MaxpoolLayer : Layer {
+class MaxpoolLayer : public Layer {
 private:
     const uint8_t padding, stride, kernel_sz;
 public:

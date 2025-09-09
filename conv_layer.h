@@ -10,7 +10,7 @@
 #include "layer.h"
 #include "matrices.h"
 
-class ConvLayer : Layer {
+class ConvLayer : public Layer {
   private:
     std::vector<Img> kernels;
     const uint8_t kernel_sz, stride, padding;
