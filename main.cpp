@@ -12,6 +12,6 @@
 using Eigen::MatrixXf;
 
 int main() {
-    ConvLayer conv(3, 2, 3, 1, 0);
+
     exit(0);
 }

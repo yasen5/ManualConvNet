@@ -20,13 +20,11 @@ void ConvLayer::info() const {
     }
 }
 
-Img ConvLayer::activation(const std::vector<Img>& input) const {
+Img ConvLayer::activation(const Img& input) const {
     Img output;
     output.reserve(kernels.size());
     for (const Img& kernel : kernels) {
-        for (const Img& img : input) {
-            output.push_back(Matrices::crossCorrelation(img, kernel, stride, padding));
-        }
+        output.push_back(Matrices::crossCorrelation(input, kernel, stride, padding));
     }
     return output;
 }
