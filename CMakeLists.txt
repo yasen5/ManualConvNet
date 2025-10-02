@@ -7,13 +7,20 @@ find_package(Eigen3 3.4 REQUIRED NO_MODULE)
 find_package(OpenCV REQUIRED)
 
 add_executable(ManualConvNet main.cpp dataset.cpp visualizer.cpp
-        visualizer.h
-        matrices.cpp
-        conv_layer.h
-        conv_layer.cpp
+#        visualizer.h
+#        matrices.cpp
+#        conv_layer.h
+#        conv_layer.cpp
         layer.h
-        maxpool_layer.h
-        maxpool_layer.cpp)
+#        maxpool_layer.h
+#        maxpool_layer.cpp
+#        conv_net.h
+#        conv_net.cpp
+        dense_net.h
+        dense_net.cpp
+        dense_layer.h
+        dense_layer.cpp
+        )
 
 # Modern way (Eigen uses imported target, OpenCV often does not)
 target_link_libraries(ManualConvNet
