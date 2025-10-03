@@ -20,7 +20,9 @@ add_executable(ManualConvNet main.cpp dataset.cpp visualizer.cpp
         dense_net.cpp
         dense_layer.h
         dense_layer.cpp
-        )
+        input_layer.h
+        input_layer.cpp
+)
 
 # Modern way (Eigen uses imported target, OpenCV often does not)
 target_link_libraries(ManualConvNet

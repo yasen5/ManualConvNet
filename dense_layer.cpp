@@ -33,4 +33,9 @@ void DenseLayer::PrintInfo() const {
   std::cout << "Weight dims: " << weights_.rows() << " x " << weights_.cols() <<
       std::endl;
   std::cout << "Weights:\n" << weights_ << std::endl;
+  std::cout << "Biases:\n" << biases_ << std::endl;
+}
+
+void DenseLayer::SetWeights(Eigen::MatrixXd& new_weights) {
+  weights_ = std::move(new_weights);
 }

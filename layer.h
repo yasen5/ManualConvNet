@@ -10,12 +10,21 @@
 
 class Layer {
 public:
-    virtual ~Layer() = default;
-    virtual void Forward(const Eigen::MatrixXd& input) = 0;
-    virtual void Backward(const Eigen::MatrixXd& prevActivation, const Eigen::MatrixXd& nextDerivative, double learningRate) = 0;
-    virtual const Eigen::MatrixXd& Activation() = 0;
-    virtual const Eigen::MatrixXd& PreviousDerrivative() = 0;
-    virtual void PrintInfo() const = 0;
+  virtual ~Layer() = default;
+
+  virtual void Forward(const Eigen::MatrixXd& input) = 0;
+
+  virtual void Backward(const Eigen::MatrixXd& prevActivation,
+                        const Eigen::MatrixXd& nextDerivative,
+                        double learningRate) = 0;
+
+  virtual const Eigen::MatrixXd& Activation() = 0;
+
+  virtual const Eigen::MatrixXd& PreviousDerrivative() = 0;
+
+  virtual void SetWeights(Eigen::MatrixXd& new_weights) = 0;
+
+  virtual void PrintInfo() const = 0;
 };
 
 #endif //LAYER_H

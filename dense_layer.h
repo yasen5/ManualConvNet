@@ -10,17 +10,29 @@
 
 class DenseLayer final : public Layer {
 private:
-    Eigen::MatrixXd weights_;
-    Eigen::MatrixXd biases_;
-    Eigen::MatrixXd previous_derivative_;
-    Eigen::MatrixXd activation_;
+  Eigen::MatrixXd weights_;
+  Eigen::MatrixXd biases_;
+  Eigen::MatrixXd previous_derivative_;
+  Eigen::MatrixXd activation_;
+
 public:
-    DenseLayer(int input_size, int output_size);
-    void Forward(const Eigen::MatrixXd& input) override;
-    void Backward(const Eigen::MatrixXd& prevActivation, const Eigen::MatrixXd& nextDerivative, double learningRate) override;
-    const Eigen::MatrixXd& Activation() override { return activation_; }
-    const Eigen::MatrixXd& PreviousDerrivative() override { return previous_derivative_; }
-    void PrintInfo() const override;
+  DenseLayer(int input_size, int output_size);
+
+  void Forward(const Eigen::MatrixXd& input) override;
+
+  void Backward(const Eigen::MatrixXd& prevActivation,
+                const Eigen::MatrixXd& nextDerivative,
+                double learningRate) override;
+
+  const Eigen::MatrixXd& Activation() override { return activation_; }
+
+  const Eigen::MatrixXd& PreviousDerrivative() override {
+    return previous_derivative_;
+  }
+
+  void PrintInfo() const override;
+
+  void SetWeights(Eigen::MatrixXd& new_weights) override;
 };
 
 
