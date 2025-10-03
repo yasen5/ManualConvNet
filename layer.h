@@ -5,12 +5,26 @@
 #ifndef LAYER_H
 #define LAYER_H
 
-#include "matrices.h"
+#include <vector>
+#include <Eigen/Dense>
 
 class Layer {
 public:
   virtual ~Layer() = default;
-  [[nodiscard]] virtual Img activation(const Img& input) const = 0;
+
+  virtual void Forward(const Eigen::MatrixXd& input) = 0;
+
+  virtual void Backward(const Eigen::MatrixXd& prevActivation,
+                        const Eigen::MatrixXd& nextDerivative,
+                        double learningRate) = 0;
+
+  virtual const Eigen::MatrixXd& Activation() = 0;
+
+  virtual const Eigen::MatrixXd& PreviousDerrivative() = 0;
+
+  virtual void SetWeights(Eigen::MatrixXd& new_weights) = 0;
+
+  virtual void PrintInfo() const = 0;
 };
 
 #endif //LAYER_H
