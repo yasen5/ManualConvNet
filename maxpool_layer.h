@@ -14,7 +14,7 @@ private:
     const uint8_t padding, stride, kernel_sz;
 public:
     MaxpoolLayer(uint8_t padding, uint8_t stride, uint8_t kernel_sz);
-    [[nodiscard]] Img activation(const Img& input) const override;
+    // [[nodiscard]] Img activation(const Img& input) const override;
 };
 
 
