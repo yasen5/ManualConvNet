@@ -11,9 +11,6 @@
 #include "layer.h"
 
 class DenseNet {
-private:
-  std::vector<std::unique_ptr<Layer> > layers_;
-
 public:
   DenseNet();
 
@@ -27,6 +24,9 @@ public:
   void PrintInfo() const;
 
   void SetInputs(const Eigen::MatrixXd& inputs);
+
+private:
+  std::vector<std::unique_ptr<Layer> > layers_;
 };
 
 

@@ -16,11 +16,14 @@ enum Data {
 
 class Dataset {
 private:
-  const std::vector<std::vector<ClassifiedImg>> images;
+  const std::vector<std::vector<ClassifiedImg> > images;
+
 public:
   Dataset(const std::string &trainFile, const std::string &validFile, const std::string &testFile);
+
   static std::vector<ClassifiedImg> readData(const std::string &fileName);
-  [[nodiscard]] std::vector<ClassifiedImg> getData(Data partition) const;
+
+  std::vector<ClassifiedImg> getData(Data partition) const;
 };
 
 #endif //DATASET_H
