@@ -24,11 +24,10 @@ add_executable(ManualConvNet main.cpp dataset.cpp visualizer.cpp
         input_layer.cpp
 )
 
-# Modern way (Eigen uses imported target, OpenCV often does not)
 target_link_libraries(ManualConvNet
         PRIVATE
         Eigen3::Eigen
-        ${OpenCV_LIBS}   # this is a list of libraries to link
+        ${OpenCV_LIBS}
 )
 
 target_include_directories(ManualConvNet

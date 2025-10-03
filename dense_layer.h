@@ -9,12 +9,6 @@
 #include "layer.h"
 
 class DenseLayer final : public Layer {
-private:
-  Eigen::MatrixXd weights_;
-  Eigen::MatrixXd biases_;
-  Eigen::MatrixXd previous_derivative_;
-  Eigen::MatrixXd activation_;
-
 public:
   DenseLayer(int input_size, int output_size);
 
@@ -33,6 +27,12 @@ public:
   void PrintInfo() const override;
 
   void SetWeights(Eigen::MatrixXd& new_weights) override;
+
+private:
+  Eigen::MatrixXd weights_;
+  Eigen::MatrixXd biases_;
+  Eigen::MatrixXd previous_derivative_;
+  Eigen::MatrixXd activation_;
 };
 
 
