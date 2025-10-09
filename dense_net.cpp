@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "input_layer.h"
+#include "softmax_layer.h"
 
 DenseNet::DenseNet() {
   layers_.push_back(std::make_unique<InputLayer>());
@@ -25,7 +26,7 @@ void DenseNet::Backprop(const Eigen::MatrixXd& expected,
   layers_[layers_.size() - 1]->Backward(
       layers_[layers_.size() - 2]->Activation(),
       loss_derivative, learning_rate);
-  for (size_t i = layers_.size() - 2; i > 1; i--) {
+  for (size_t i = layers_.size() - 2; i > 0; i--) {
     layers_[i]->Backward(layers_.at(i - 1)->Activation(),
                          layers_.at(i + 1)->PreviousDerrivative(),
                          learning_rate);
@@ -51,4 +52,3 @@ void DenseNet::SetInputs(const Eigen::MatrixXd& inputs) {
     throw std::runtime_error("Layer 0 is not an InputLayer");
   }
 }
-

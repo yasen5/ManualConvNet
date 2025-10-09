@@ -22,6 +22,8 @@ add_executable(ManualConvNet main.cpp dataset.cpp visualizer.cpp
         dense_layer.cpp
         input_layer.h
         input_layer.cpp
+        softmax_layer.cpp
+        softmax_layer.h
 )
 
 target_link_libraries(ManualConvNet

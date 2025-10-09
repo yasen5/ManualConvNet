@@ -1,23 +1,34 @@
 #include <iostream>
 #include "dense_layer.h"
 #include "dense_net.h"
+#include "softmax_layer.h"
 
 int main() {
   DenseNet net;
-  net.AddLayer(std::make_unique<DenseLayer>(1, 1));
+  DenseLayer firstLayer(1, 3);
+  Eigen::MatrixXd firstLayerWeights(3, 1);
+  firstLayerWeights << 1, 1, 1;
+  firstLayer.SetWeights(firstLayerWeights);
+  net.AddLayer(std::make_unique<DenseLayer>(firstLayer));
+  net.AddLayer(std::make_unique<SoftmaxLayer>(SoftmaxLayer(3)));
   net.PrintInfo();
-  std::vector<Eigen::MatrixXd> inputs(3, Eigen::MatrixXd(1, 1));
-  inputs[0] << 0;
-  inputs[1] << 1;
-  inputs[2] << 2;
-  std::vector<Eigen::MatrixXd> expected_outputs(3, Eigen::MatrixXd(1, 1));
-  expected_outputs[0] << 1;
-  expected_outputs[1] << 3;
-  expected_outputs[2] << 5;
+  Eigen::MatrixXd input(1, 1);
+  input << 1;
+  Eigen::MatrixXd truth(3, 1);
+  truth << 1, 0, 0;
+  net.SetInputs(input);
   for (int i = 0; i < 50; i++) {
-    net.SetInputs(inputs[i % 3]);
-    net.Backprop(expected_outputs[i % 3], 0.1);
+    net.Backprop(truth, 0.1);
+    net.PrintInfo();
   }
-  net.PrintInfo();
+  // net.AddLayer(std::make_unique<DenseLayer>(DenseLayer(784, 64)));
+  // net.AddLayer(std::make_unique<DenseLayer>(DenseLayer(64, 64)));
+  // net.AddLayer(std::make_unique<DenseLayer>(DenseLayer(64, 64)));
+  // net.AddLayer(std::make_unique<DenseLayer>(DenseLayer(64, 64)));
+  // net.AddLayer(std::make_unique<DenseLayer>(DenseLayer(64, 64)));
+  // net.AddLayer(std::make_unique<DenseLayer>(DenseLayer(64, 64)));
+  // net.AddLayer(std::make_unique<DenseLayer>(DenseLayer(64, 64)));
+  // net.AddLayer(std::make_unique<DenseLayer>(DenseLayer(64, 10)));
+
   exit(0);
 }
