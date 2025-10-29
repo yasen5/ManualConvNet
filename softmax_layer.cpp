@@ -44,10 +44,10 @@ void SoftmaxLayer::Backward(const Eigen::MatrixXd& prevActivation,
                             double learningRate) {
   for (int i = 0; i < previous_derivative_.size(); i++) {
     for (int j = 0; j < previous_derivative_.size(); j++) {
-      previous_derivative_(i, 0) += (i == j)
-                                      ? nextDerivative(i, 0) * (1
-                                          - nextDerivative(i, 0))
-                                      : -nextDerivative(j, 0);
+      double calculated = (i == j)
+                            ? nextDerivative(i, 0) * (1 - nextDerivative(i, 0))
+                            : -nextDerivative(j, 0);
+      previous_derivative_(i, 0) += calculated;
     }
   }
 }

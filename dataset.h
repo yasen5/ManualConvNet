@@ -4,23 +4,32 @@
 #include <Eigen/Dense>
 
 struct ClassifiedImg {
-  Eigen::MatrixXf img;
-  u_int8_t category;
+  Eigen::MatrixXd img;
+  u_int8_t digit; // TODO generalize away from MNIST digits
+  Eigen::MatrixXd one_hot;
 };
 
-enum Data {
-  TRAIN,
-  VALID,
-  TEST
-};
+// enum Data {
+//   TRAIN,
+//   VALID,
+//   TEST
+// };
 
 class Dataset {
 private:
-  const std::vector<std::vector<ClassifiedImg>> images;
+  // const std::vector<std::vector<ClassifiedImg> > datasets_;
+  // const int img_size_;
+
 public:
-  Dataset(const std::string &trainFile, const std::string &validFile, const std::string &testFile);
-  static std::vector<ClassifiedImg> readData(const std::string &fileName);
-  [[nodiscard]] std::vector<ClassifiedImg> getData(Data partition) const;
+  // Dataset(const std::string &dataFolder, bool flatten);
+
+  static std::vector<ClassifiedImg> ReadData(const std::string &fileName, bool flatten, int max_images = INFINITY);
+
+  // std::vector<ClassifiedImg> GetData(Data partition) const;
+
+  // constexpr int ImgSize() const {
+  //   return img_size_;
+  // }
 };
 
 #endif //DATASET_H
