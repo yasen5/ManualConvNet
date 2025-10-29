@@ -11,8 +11,9 @@ void ReLU(Eigen::MatrixXd& input) {
 }
 
 DenseLayer::DenseLayer(int input_size, int output_size): weights_(
-      Eigen::MatrixXd::Constant(output_size, input_size, 1.0)),
-  biases_(Eigen::MatrixXd::Constant(output_size, 1, 0)),
+      Eigen::MatrixXd::Random(output_size, input_size)),
+  biases_(Eigen::MatrixXd::Constant(output_size, 1, 0))
+  /*biases_(Eigen::MatrixXd::Random(output_size, 1))*/,
   previous_derivative_(input_size, 1), activation_(output_size, 1) {
 }
 
@@ -25,7 +26,7 @@ void DenseLayer::Backward(const Eigen::MatrixXd& prevActivation,
                           const Eigen::MatrixXd& nextDerivative,
                           const double learningRate) {
   weights_ += nextDerivative * prevActivation.transpose() * learningRate;
-  biases_ += nextDerivative * learningRate;
+  // biases_ += nextDerivative * learningRate; TODO uncomment
   previous_derivative_ = weights_.transpose() * nextDerivative;
 }
 
@@ -33,7 +34,7 @@ void DenseLayer::PrintInfo() const {
   std::cout << "Weight dims: " << weights_.rows() << " x " << weights_.cols() <<
       std::endl;
   std::cout << "Weights:\n" << weights_ << std::endl;
-  std::cout << "Biases:\n" << biases_ << std::endl;
+  std::cout << "Biases:\n" << biases_.transpose() << std::endl;
 }
 
 void DenseLayer::SetWeights(Eigen::MatrixXd& new_weights) {
