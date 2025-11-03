@@ -10,7 +10,7 @@
 #include "softmax_layer.h"
 
 DenseNet::DenseNet() {
-  layers_.push_back(std::make_unique<InputLayer>());
+
 }
 
 

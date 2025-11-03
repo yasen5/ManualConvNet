@@ -11,9 +11,6 @@
 #include "layer.h"
 
 class DenseNet {
-private:
-  std::vector<std::unique_ptr<Layer> > layers_;
-
 public:
   DenseNet();
 
@@ -21,8 +18,6 @@ public:
 
   void Backprop(const Eigen::MatrixXd& expected,
                 double learning_rate);
-
-  void AddLayer(std::unique_ptr<Layer>&& layer);
 
   void PrintInfo() const;
 

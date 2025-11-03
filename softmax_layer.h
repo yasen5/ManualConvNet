@@ -6,28 +6,25 @@
 #define SOFTMAX_LAYER_H
 #include "layer.h"
 
-
-class SoftmaxLayer final : public Layer {
+template <int InputSize, int OutputSize>
+class SoftmaxLayer final : public Layer<InputSize, OutputSize> {
 public:
-  SoftmaxLayer(int num_inputs);
+  void Forward(const Eigen::Vector<float, InputSize>& input) override;
 
-  void Forward(const Eigen::MatrixXd& input) override;
+  void Backward(double learningRate) override;
 
-  void Backward(const Eigen::MatrixXd& prevActivation,
-                const Eigen::MatrixXd& nextDerivative,
-                double learningRate) override;
+  const Eigen::Vector<float, OutputSize>& Activation() override;
 
-  const Eigen::MatrixXd& Activation() override;
+  const Eigen::Vector<float, InputSize>& PreviousDerivative() override;
 
-  const Eigen::MatrixXd& PreviousDerrivative() override;
-
-  void SetWeights(Eigen::MatrixXd& new_weights) override;
+  void SetWeights(
+      Eigen::Matrix<float, OutputSize, InputSize>& new_weights) override;
 
   void PrintInfo() const override;
 
 private:
-  Eigen::MatrixXd previous_derivative_;
-  Eigen::MatrixXd activation_;
+  Eigen::Vector<float, InputSize> previous_derivative_;
+  Eigen::Vector<float, OutputSize> activation_;
 };
 
 

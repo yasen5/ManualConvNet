@@ -4,23 +4,24 @@
 
 #ifndef DENSE_LAYER_H
 #define DENSE_LAYER_H
-#include <vector>
 
 #include "layer.h"
 
-class DenseLayer final : public Layer {
+template <int InputSize, int OutputSize>
+class DenseLayer final : public Layer<InputSize, OutputSize> {
 public:
-  DenseLayer(int input_size, int output_size);
+  void Forward(const Eigen::Vector<float, InputSize>& input) override;
 
-  void Forward(const Eigen::MatrixXd& input) override;
+  void Backward(double learningRate) override;
 
-  void Backward(const Eigen::MatrixXd& prevActivation,
-                const Eigen::MatrixXd& nextDerivative,
-                double learningRate) override;
+  void SetWeights(
+      Eigen::Matrix<float, OutputSize, InputSize>& new_weights) override;
 
-  const Eigen::MatrixXd& Activation() override { return activation_; }
+  const Eigen::Vector<float, OutputSize> Activation() override {
+    return activation_;
+  }
 
-  const Eigen::MatrixXd& PreviousDerrivative() override {
+  const Eigen::Vector<float, InputSize>& PreviousDerivative() override {
     return previous_derivative_;
   }
 
@@ -29,10 +30,10 @@ public:
   void SetWeights(Eigen::MatrixXd& new_weights) override;
 
 private:
-  Eigen::MatrixXd weights_;
-  Eigen::MatrixXd biases_;
-  Eigen::MatrixXd previous_derivative_;
-  Eigen::MatrixXd activation_;
+  Eigen::Matrix<float, OutputSize, InputSize> weights_;
+  Eigen::Vector<float, OutputSize> biases_;
+  Eigen::Vector<float, InputSize> previous_derivative_;
+  Eigen::Vector<float, OutputSize> activation_;
 };
 
 

@@ -6,24 +6,23 @@
 #define INPUT_LAYER_H
 #include "layer.h"
 
-
-class InputLayer final : public Layer {
+template <int InputSize, int OutputSize>
+class InputLayer final : public Layer<InputSize, OutputSize> {
 public:
-  void Forward(const Eigen::MatrixXd& input) override;
+  void Forward(const Eigen::Vector<float, InputSize>& input) override;
 
-  void Backward(const Eigen::MatrixXd& prevActivation,
-                const Eigen::MatrixXd& nextDerivative,
-                double learningRate) override;
+  void Backward(double learningRate) override;
 
-  const Eigen::MatrixXd& Activation() override;
+  const Eigen::Vector<float, OutputSize>& Activation() override;
 
-  const Eigen::MatrixXd& PreviousDerrivative() override;
+  const Eigen::Vector<float, InputSize>& PreviousDerivative() override;
 
-  void PrintInfo() const override;
-
-  void SetWeights(Eigen::MatrixXd& new_weights) override;
+  void SetWeights(
+      Eigen::Matrix<float, OutputSize, InputSize>& new_weights) override;
 
   void SetInputs(const Eigen::MatrixXd& inputs);
+
+  void PrintInfo() const override;
 
 private:
   const Eigen::MatrixXd* inputs_ = nullptr;
