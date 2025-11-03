@@ -56,7 +56,7 @@ std::vector<ClassifiedImg> Dataset::ReadData(const std::string& fileName,
   while (std::getline(file, line)) {
     counter++;
     std::stringstream ss(line);
-    Eigen::MatrixXd img;
+    Eigen::MatrixXf img;
     if (flatten) {
       img.resize(numPixelsX * numPixelsY, 1);
     } else {
@@ -75,7 +75,7 @@ std::vector<ClassifiedImg> Dataset::ReadData(const std::string& fileName,
         }
       }
     }
-    Eigen::MatrixXd one_hot(10, 1); // TODO get num_classes_ variable
+    Eigen::MatrixXf one_hot(10, 1); // TODO get num_classes_ variable
     one_hot(label - 1, 0) = 1;
     images.emplace_back(img, label, one_hot);
     if (counter >= max_images) {

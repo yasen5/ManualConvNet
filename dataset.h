@@ -4,9 +4,9 @@
 #include <Eigen/Dense>
 
 struct ClassifiedImg {
-  Eigen::MatrixXd img;
+  Eigen::MatrixXf img;
   u_int8_t digit; // TODO generalize away from MNIST digits
-  Eigen::MatrixXd one_hot;
+  Eigen::MatrixXf one_hot;
 };
 
 // enum Data {

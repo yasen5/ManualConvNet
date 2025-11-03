@@ -17,16 +17,16 @@ private:
 public:
   DenseNet();
 
-  const Eigen::MatrixXd& Predict();
+  const Eigen::MatrixXf& Predict();
 
-  void Backprop(const Eigen::MatrixXd& expected,
-                double learning_rate);
+  void Backprop(const Eigen::MatrixXf& expected,
+                float learning_rate);
 
   void AddLayer(std::unique_ptr<Layer>&& layer);
 
   void PrintInfo() const;
 
-  void SetInputs(const Eigen::MatrixXd& inputs);
+  void SetInputs(const Eigen::MatrixXf& inputs);
 };
 
 

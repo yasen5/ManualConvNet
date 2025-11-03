@@ -14,17 +14,17 @@ DenseNet::DenseNet() {
 }
 
 
-const Eigen::MatrixXd& DenseNet::Predict() {
+const Eigen::MatrixXf& DenseNet::Predict() {
   for (int i = 1; i < layers_.size(); i++) {
     layers_[i]->Forward(layers_[i - 1]->Activation());
   }
   return layers_[layers_.size() - 1]->Activation();
 }
 
-void DenseNet::Backprop(const Eigen::MatrixXd& expected,
-                        const double learning_rate) {
-  const Eigen::MatrixXd pred = Predict();
-  Eigen::MatrixXd loss_derivative(expected.size(), 1);
+void DenseNet::Backprop(const Eigen::MatrixXf& expected,
+                        const float learning_rate) {
+  const Eigen::MatrixXf pred = Predict();
+  Eigen::MatrixXf loss_derivative(expected.size(), 1);
   for (int i = 0; i < pred.size(); i++) {
     loss_derivative(i, 0) = expected(i, 0) * std::log(pred(i, 0)) * -1;
   }
@@ -33,7 +33,7 @@ void DenseNet::Backprop(const Eigen::MatrixXd& expected,
       loss_derivative, learning_rate);
   for (size_t i = layers_.size() - 2; i > 0; i--) {
     layers_[i]->Backward(layers_.at(i - 1)->Activation(),
-                         layers_.at(i + 1)->PreviousDerrivative(),
+                         layers_.at(i + 1)->PreviousDerivative(),
                          learning_rate);
   }
 }
@@ -50,7 +50,7 @@ void DenseNet::PrintInfo() const {
   }
 }
 
-void DenseNet::SetInputs(const Eigen::MatrixXd& inputs) {
+void DenseNet::SetInputs(const Eigen::MatrixXf& inputs) {
   if (auto* inputLayer = dynamic_cast<InputLayer*>(layers_[0].get())) {
     inputLayer->SetInputs(inputs);
   } else {

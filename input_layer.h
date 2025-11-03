@@ -9,24 +9,26 @@
 
 class InputLayer final : public Layer {
 public:
-  void Forward(const Eigen::MatrixXd& input) override;
+  void Forward(const Eigen::VectorXf& input) override;
 
-  void Backward(const Eigen::MatrixXd& prevActivation,
-                const Eigen::MatrixXd& nextDerivative,
-                double learningRate) override;
+  void Backward(const Eigen::VectorXf& prevActivation,
+                const Eigen::VectorXf& nextDerivative,
+                float learningRate) override;
 
-  const Eigen::MatrixXd& Activation() override;
+  const Eigen::VectorXf& Activation() override {
+    return *inputs_;
+  }
 
-  const Eigen::MatrixXd& PreviousDerrivative() override;
+  const Eigen::VectorXf& PreviousDerivative() override;
 
   void PrintInfo() const override;
 
-  void SetWeights(Eigen::MatrixXd& new_weights) override;
+  void SetWeights(Eigen::MatrixXf& new_weights) override;
 
-  void SetInputs(const Eigen::MatrixXd& inputs);
+  void SetInputs(const Eigen::VectorXf& inputs);
 
 private:
-  const Eigen::MatrixXd* inputs_ = nullptr;
+  const Eigen::VectorXf* inputs_ = nullptr;
 };
 
 

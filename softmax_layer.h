@@ -11,23 +11,27 @@ class SoftmaxLayer final : public Layer {
 public:
   SoftmaxLayer(int num_inputs);
 
-  void Forward(const Eigen::MatrixXd& input) override;
+  void Forward(const Eigen::VectorXf& input) override;
 
-  void Backward(const Eigen::MatrixXd& prevActivation,
-                const Eigen::MatrixXd& nextDerivative,
-                double learningRate) override;
+  void Backward(const Eigen::VectorXf& prevActivation,
+                const Eigen::VectorXf& nextDerivative,
+                float learningRate) override;
 
-  const Eigen::MatrixXd& Activation() override;
+  const Eigen::VectorXf& Activation() override {
+    return activation_;
+  }
 
-  const Eigen::MatrixXd& PreviousDerrivative() override;
+  const Eigen::VectorXf& PreviousDerivative() override {
+    return previous_derivative_;
+  }
 
-  void SetWeights(Eigen::MatrixXd& new_weights) override;
+  void SetWeights(Eigen::MatrixXf& new_weights) override;
 
   void PrintInfo() const override;
 
 private:
-  Eigen::MatrixXd previous_derivative_;
-  Eigen::MatrixXd activation_;
+  Eigen::VectorXf previous_derivative_;
+  Eigen::VectorXf activation_;
 };
 
 

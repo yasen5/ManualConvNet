@@ -12,8 +12,8 @@ SoftmaxLayer::SoftmaxLayer(const int num_inputs) : previous_derivative_(
 }
 
 
-void SoftmaxLayer::Forward(const Eigen::MatrixXd& input) {
-  double expSum = 0;
+void SoftmaxLayer::Forward(const Eigen::VectorXf& input) {
+  float expSum = 0;
   for (int i = 0; i < input.rows(); i++) {
     expSum += exp(input(i));
   }
@@ -22,31 +22,24 @@ void SoftmaxLayer::Forward(const Eigen::MatrixXd& input) {
   }
 }
 
-const Eigen::MatrixXd& SoftmaxLayer::Activation() {
-  return activation_;
-}
-
-const Eigen::MatrixXd& SoftmaxLayer::PreviousDerrivative() {
-  return previous_derivative_;
-}
-
 void SoftmaxLayer::PrintInfo() const {
   std::cout << "Softmax layer that takes in " << activation_.rows() << " inputs"
       << std::endl;
 }
 
-void SoftmaxLayer::SetWeights(Eigen::MatrixXd& new_weights) {
+void SoftmaxLayer::SetWeights(Eigen::MatrixXf& new_weights) {
   std::cerr << "Setting weights for a softmax layer!" << std::endl;
 }
 
-void SoftmaxLayer::Backward(const Eigen::MatrixXd& prevActivation,
-                            const Eigen::MatrixXd& nextDerivative,
-                            double learningRate) {
+void SoftmaxLayer::Backward(const Eigen::VectorXf& prevActivation,
+                            const Eigen::VectorXf& nextDerivative,
+                            float learningRate) {
   for (int i = 0; i < previous_derivative_.size(); i++) {
     for (int j = 0; j < previous_derivative_.size(); j++) {
-      double calculated = (i == j)
-                            ? nextDerivative(i, 0) * (1 - nextDerivative(i, 0))
-                            : -nextDerivative(j, 0);
+      const float calculated = (i == j)
+                                 ? nextDerivative(i, 0) * (
+                                     1 - nextDerivative(i, 0))
+                                 : -nextDerivative(j, 0);
       previous_derivative_(i, 0) += calculated;
     }
   }
