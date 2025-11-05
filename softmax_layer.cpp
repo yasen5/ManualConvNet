@@ -13,6 +13,7 @@ SoftmaxLayer::SoftmaxLayer(const int num_inputs) : previous_derivative_(
 
 
 void SoftmaxLayer::Forward(const Eigen::VectorXf& input) {
+  activation_.setZero();
   float expSum = 0;
   for (int i = 0; i < input.rows(); i++) {
     expSum += exp(input(i));
@@ -34,15 +35,21 @@ void SoftmaxLayer::SetWeights(Eigen::MatrixXf& new_weights) {
 void SoftmaxLayer::Backward(const Eigen::VectorXf& prevActivation,
                             const Eigen::VectorXf& nextDerivative,
                             float learningRate) {
-  for (int i = 0; i < previous_derivative_.size(); i++) {
+  previous_derivative_ = -1 * nextDerivative * learningRate;
+  // TODO find out why this needs to be negative
+  // THE ABOVE CODE ASSUMES THAT THE NET IS APPLYING CROSS-ENTROPY LOSS
+  // If that loss function is not used, and the resulting derivative isn't
+  // as simplified as `prediction - expected` or something like that, uncomment
+  // the code below
+  /*for (int i = 0; i < previous_derivative_.size(); i++) {
     for (int j = 0; j < previous_derivative_.size(); j++) {
       const float calculated = (i == j)
                                  ? nextDerivative(i, 0) * (
                                      1 - nextDerivative(i, 0))
-                                 : -nextDerivative(j, 0);
+                                 : nextDerivative(i, 0) * -nextDerivative(j, 0);
       previous_derivative_(i, 0) += calculated;
     }
-  }
+  }*/
 }
 
 

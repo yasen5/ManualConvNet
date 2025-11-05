@@ -23,7 +23,7 @@ const Eigen::VectorXf& InputLayer::PreviousDerivative() {
 }
 
 void InputLayer::PrintInfo() const {
-  std::cout << "Inputs transposed: " << inputs_->transpose() << std::endl;
+  std::cout << "Inputs: " << inputs_ << std::endl;
 }
 
 void InputLayer::SetWeights(Eigen::MatrixXf& new_weights) {

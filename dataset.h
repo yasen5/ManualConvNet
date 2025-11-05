@@ -5,6 +5,7 @@
 
 struct ClassifiedImg {
   Eigen::MatrixXf img;
+  Eigen::VectorXf flattened;
   u_int8_t digit; // TODO generalize away from MNIST digits
   Eigen::MatrixXf one_hot;
 };
@@ -23,7 +24,7 @@ private:
 public:
   // Dataset(const std::string &dataFolder, bool flatten);
 
-  static std::vector<ClassifiedImg> ReadData(const std::string &fileName, bool flatten, int max_images = INFINITY);
+  static std::vector<ClassifiedImg> ReadData(const std::string &fileName, int max_images = INFINITY);
 
   // std::vector<ClassifiedImg> GetData(Data partition) const;
 

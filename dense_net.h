@@ -17,7 +17,7 @@ private:
 public:
   DenseNet();
 
-  const Eigen::MatrixXf& Predict();
+  const Eigen::VectorXf& Predict();
 
   void Backprop(const Eigen::MatrixXf& expected,
                 float learning_rate);
@@ -26,7 +26,7 @@ public:
 
   void PrintInfo() const;
 
-  void SetInputs(const Eigen::MatrixXf& inputs);
+  void SetInputs(const Eigen::VectorXf& inputs);
 };
 
 

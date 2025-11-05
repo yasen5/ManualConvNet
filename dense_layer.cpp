@@ -12,12 +12,13 @@ void ReLU(Eigen::VectorXf& input) {
 
 DenseLayer::DenseLayer(int input_size, int output_size): weights_(
       Eigen::MatrixXf::Random(output_size, input_size)),
-  biases_(Eigen::MatrixXf::Constant(output_size, 1, 0))
-  /*biases_(Eigen::MatrixXf::Random(output_size, 1))*/,
+  //biases_(Eigen::MatrixXf::Constant(output_size, 1, 0))
+  biases_(Eigen::MatrixXf::Random(output_size, 1)),
   previous_derivative_(input_size, 1), activation_(output_size, 1) {
 }
 
 void DenseLayer::Forward(const Eigen::VectorXf& input) {
+  activation_.setZero();
   activation_ = weights_ * input + biases_;
   ReLU(activation_);
 }

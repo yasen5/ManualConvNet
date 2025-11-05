@@ -12,7 +12,6 @@
 // };
 
 std::vector<ClassifiedImg> Dataset::ReadData(const std::string& fileName,
-                                             bool flatten,
                                              int max_images) {
   std::vector<ClassifiedImg> images;
   std::ifstream file(fileName);
@@ -57,27 +56,22 @@ std::vector<ClassifiedImg> Dataset::ReadData(const std::string& fileName,
     counter++;
     std::stringstream ss(line);
     Eigen::MatrixXf img;
-    if (flatten) {
-      img.resize(numPixelsX * numPixelsY, 1);
-    } else {
-      img.resize(numPixelsY, numPixelsX);
-    }
+    img.resize(numPixelsY, numPixelsX);
+    Eigen::VectorXf flattened;
+    flattened.resize(numPixelsX * numPixelsY);
     std::string csvBox;
     std::getline(ss, csvBox, ',');
     const uint8_t label = csvBox.at(0) - '0';
     for (int row = 0; row < numPixelsY; row++) {
       for (int col = 0; col < numPixelsX; col++) {
         std::getline(ss, csvBox, ',');
-        if (flatten) {
-          img(row * numPixelsX + col) = std::stod(csvBox) / 255.0;
-        } else {
-          img(row, col) = std::stod(csvBox) / 255.0;
-        }
+        flattened(row * numPixelsX + col) = std::stof(csvBox) / 255.0;
+        img(row, col) = std::stof(csvBox) / 255.0;
       }
     }
     Eigen::MatrixXf one_hot(10, 1); // TODO get num_classes_ variable
     one_hot(label - 1, 0) = 1;
-    images.emplace_back(img, label, one_hot);
+    images.emplace_back(img, flattened, label, one_hot);
     if (counter >= max_images) {
       break;
     }

@@ -5,7 +5,6 @@
 #ifndef LAYER_H
 #define LAYER_H
 
-#include <vector>
 #include <Eigen/Dense>
 
 class Layer {
