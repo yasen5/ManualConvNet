@@ -11,22 +11,22 @@
 #include "layer.h"
 
 class DenseNet {
-private:
-  std::vector<std::unique_ptr<Layer> > layers_;
-
 public:
   DenseNet();
 
   const Eigen::VectorXf& Predict();
 
-  void Backprop(const Eigen::MatrixXf& expected,
-                float learning_rate);
+  void Backprop(const Eigen::VectorXf& expected,
+                float learning_rate, bool verbose);
 
   void AddLayer(std::unique_ptr<Layer>&& layer);
 
   void PrintInfo() const;
 
   void SetInputs(const Eigen::VectorXf& inputs);
+
+private:
+  std::vector<std::unique_ptr<Layer> > layers_;
 };
 
 

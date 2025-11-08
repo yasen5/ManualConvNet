@@ -69,10 +69,10 @@ std::vector<ClassifiedImg> Dataset::ReadData(const std::string& fileName,
         img(row, col) = std::stof(csvBox) / 255.0;
       }
     }
-    Eigen::MatrixXf one_hot(10, 1); // TODO get num_classes_ variable
-    one_hot(label - 1, 0) = 1;
+    Eigen::VectorXf one_hot(10, 1); // TODO get num_classes_ variable
+    one_hot(label, 0) = 1;
     images.emplace_back(img, flattened, label, one_hot);
-    if (counter >= max_images) {
+    if (max_images != 0 && counter >= max_images) {
       break;
     }
   }

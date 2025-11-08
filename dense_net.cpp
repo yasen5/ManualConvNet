@@ -17,18 +17,30 @@ DenseNet::DenseNet() {
 const Eigen::VectorXf& DenseNet::Predict() {
   for (int i = 1; i < layers_.size(); i++) {
     layers_[i]->Forward(layers_[i - 1]->Activation());
+    for (const float val : layers_[i]->Activation()) {
+      if (std::isnan(val)) {
+        std::cerr << "Generated nan value in output of layer: " << i <<
+            std::endl;
+        exit(0);
+      }
+    }
   }
-  std::cout << "returning" << std::endl;
   return layers_[layers_.size() - 1]->Activation();
 }
 
-void DenseNet::Backprop(const Eigen::MatrixXf& expected,
-                        const float learning_rate) {
+void DenseNet::Backprop(const Eigen::VectorXf& expected,
+                        const float learning_rate, const bool verbose) {
   const Eigen::VectorXf pred = Predict();
-  Eigen::VectorXf cross_entropy_loss = pred - expected;
+  Eigen::VectorXf loss(expected.size());
+  for (int i = 0; i < expected.size(); i++) {
+    loss[i] = -expected[i] * log(pred[i]);
+  }
+  if (verbose)
+    std::cout << "Loss: " << loss.transpose() << std::endl;
+  Eigen::VectorXf loss_derivative = pred - expected;
   layers_[layers_.size() - 1]->Backward(
       layers_[layers_.size() - 2]->Activation(),
-      cross_entropy_loss, learning_rate);
+      loss_derivative, learning_rate);
   for (size_t i = layers_.size() - 2; i > 0; i--) {
     layers_[i]->Backward(layers_.at(i - 1)->Activation(),
                          layers_.at(i + 1)->PreviousDerivative(),

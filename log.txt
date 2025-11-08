@@ -1,0 +1,4 @@
+Performance:
+Only doing 7s and 9s (2 each) with 600 iterations (before & after ReLU fixes): Meh, could predict one vs the other but the numbers were very close
+
+Only doing 7s and 9s (2 each) with 1800 iterations: Perfect, expected for overfitting

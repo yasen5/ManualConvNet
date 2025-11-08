@@ -14,6 +14,8 @@ SoftmaxLayer::SoftmaxLayer(const int num_inputs) : previous_derivative_(
 
 void SoftmaxLayer::Forward(const Eigen::VectorXf& input) {
   activation_.setZero();
+  Eigen::VectorXf shifted = input;
+  shifted = shifted.array() - shifted.maxCoeff();
   float expSum = 0;
   for (int i = 0; i < input.rows(); i++) {
     expSum += exp(input(i));

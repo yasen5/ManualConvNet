@@ -30,6 +30,7 @@ add_executable(ManualConvNet main.cpp dataset.cpp visualizer.cpp
         input_layer.cpp
         softmax_layer.cpp
         softmax_layer.h
+        constants.h
 )
 
 target_link_libraries(ManualConvNet
@@ -41,4 +42,5 @@ target_link_libraries(ManualConvNet
 target_include_directories(ManualConvNet
         PRIVATE
         ${OpenCV_INCLUDE_DIRS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tqdm.cpp/include
 )

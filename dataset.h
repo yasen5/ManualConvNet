@@ -24,7 +24,7 @@ private:
 public:
   // Dataset(const std::string &dataFolder, bool flatten);
 
-  static std::vector<ClassifiedImg> ReadData(const std::string &fileName, int max_images = INFINITY);
+  static std::vector<ClassifiedImg> ReadData(const std::string &fileName, int max_images = 0);
 
   // std::vector<ClassifiedImg> GetData(Data partition) const;
 
