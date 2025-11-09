@@ -6,9 +6,11 @@
 #include "dense_net.h"
 #include "softmax_layer.h"
 #include <tqdm/tqdm.h>
+#include <sciplot/sciplot.hpp>
+#include <iomanip>
 
 int main() {
-  std::vector<ClassifiedImg> read =
+  const std::vector<ClassifiedImg> read =
       Dataset::ReadData(
           "/Users/yasen/CLionProjects/ManualConvNet/Data/train.csv", 30);
 
@@ -31,13 +33,15 @@ int main() {
       train.push_back(img);
     }
   }
-  if (train.size() == 0) {
+  if (train.empty()) {
     std::cout << "No 9s in the set " << std::endl;
     exit(0);
   }
   const bool verbose = false;
+  std::vector<float> losses(10);
   std::vector<int> distribution(10);
-  for (int i : tqdm::range(1800)) {
+  for (int i : tqdm::range(MLConstants::LinearConstants::EPOCHS)) {
+    float epoch_loss = 0;
     for (const auto& [img, flattened, digit, one_hot] : train) {
       distribution[digit]++;
       net.SetInputs(flattened);
@@ -50,22 +54,38 @@ int main() {
         std::cout << "Output: " << output << std::endl;
         std::cout << "=============================" << std::endl;
       }
-      net.Backprop(one_hot, MLConstants::LinearConstants::LEARNING_RATE, false);
+
+      const float curr_loss = net.Backprop(one_hot,
+                                           MLConstants::LinearConstants::LEARNING_RATE);
+      // if (i >= MLConstants::LinearConstants::EPOCHS / 2 && abs(curr_loss) > 1) {
+      //   std::cout << "Pred: " << net.Predict();
+      //   std::cout << "Actual: " << one_hot << std::endl;
+      // }
+      epoch_loss += curr_loss;
+    }
+    epoch_loss /= train.size();
+    if (i % (MLConstants::LinearConstants::EPOCHS / 10) == 0) {
+      losses[i / (MLConstants::LinearConstants::EPOCHS / 10)] = epoch_loss;
     }
   }
-  std::cout << "Distribution: " << std::endl;
-  for (const int num : distribution) {
-    std::cout << num << ", " << std::endl;
+  // std::cout << "Distribution: " << std::endl;
+  // for (const int num : distribution) {
+  //   std::cout << num << ", " << std::endl;
+  // }
+  std::cout << "Losses: " << std::endl;
+  for (const double loss : losses) {
+    std::cout << std::fixed << std::setprecision(2) << loss << ", ";
   }
-  for (const auto& [img, flattened, digit, one_hot] : train) {
-    net.SetInputs(flattened);
-    std::cout << "Actual: " << static_cast<int>(digit) << "\nOne Hot: " <<
-        one_hot.transpose() << std::endl;
-    std::cout << "Predicted: " << std::endl;
-    const Eigen::VectorXf output = net.Predict();
-    std::cout << "Output: " << output << std::endl;
-    std::cout << "=============================" << std::endl;
-  }
+  std::cout << std::endl;
+  // for (const auto& [img, flattened, digit, one_hot] : train) {
+  //   net.SetInputs(flattened);
+  //   std::cout << "Actual: " << static_cast<int>(digit) << "\nOne Hot: " <<
+  //       one_hot.transpose() << std::endl;
+  //   std::cout << "Predicted: " << std::endl;
+  //   const Eigen::VectorXf output = net.Predict();
+  //   std::cout << "Output: " << output << std::endl;
+  //   std::cout << "=============================" << std::endl;
+  // }
 
   exit(0);
 }

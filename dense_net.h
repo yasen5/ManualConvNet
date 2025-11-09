@@ -16,8 +16,8 @@ public:
 
   const Eigen::VectorXf& Predict();
 
-  void Backprop(const Eigen::VectorXf& expected,
-                float learning_rate, bool verbose);
+  float Backprop(const Eigen::VectorXf& expected,
+                 float learning_rate);
 
   void AddLayer(std::unique_ptr<Layer>&& layer);
 

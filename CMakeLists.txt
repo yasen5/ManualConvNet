@@ -42,5 +42,6 @@ target_link_libraries(ManualConvNet
 target_include_directories(ManualConvNet
         PRIVATE
         ${OpenCV_INCLUDE_DIRS}
-        ${CMAKE_CURRENT_SOURCE_DIR}/tqdm.cpp/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/tqdm.cpp/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/sciplot/
 )

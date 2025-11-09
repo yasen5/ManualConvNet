@@ -6,7 +6,6 @@
 #include <iostream>
 
 #include "input_layer.h"
-#include <typeinfo>
 #include "softmax_layer.h"
 
 DenseNet::DenseNet() {
@@ -28,16 +27,10 @@ const Eigen::VectorXf& DenseNet::Predict() {
   return layers_[layers_.size() - 1]->Activation();
 }
 
-void DenseNet::Backprop(const Eigen::VectorXf& expected,
-                        const float learning_rate, const bool verbose) {
+float DenseNet::Backprop(const Eigen::VectorXf& expected,
+                         const float learning_rate) {
   const Eigen::VectorXf pred = Predict();
-  Eigen::VectorXf loss(expected.size());
-  for (int i = 0; i < expected.size(); i++) {
-    loss[i] = -expected[i] * log(pred[i]);
-  }
-  if (verbose)
-    std::cout << "Loss: " << loss.transpose() << std::endl;
-  Eigen::VectorXf loss_derivative = pred - expected;
+  const Eigen::VectorXf loss_derivative = pred - expected;
   layers_[layers_.size() - 1]->Backward(
       layers_[layers_.size() - 2]->Activation(),
       loss_derivative, learning_rate);
@@ -46,6 +39,9 @@ void DenseNet::Backprop(const Eigen::VectorXf& expected,
                          layers_.at(i + 1)->PreviousDerivative(),
                          learning_rate);
   }
+  const float cross_entropy_loss = (expected.array() * log(pred.array())).
+      sum();
+  return cross_entropy_loss;
 }
 
 void DenseNet::AddLayer(std::unique_ptr<Layer>&& layer) {
