@@ -6,7 +6,7 @@
 #include "dense_net.h"
 #include "softmax_layer.h"
 #include <tqdm/tqdm.h>
-#include <sciplot/sciplot.hpp>
+#include <implot/implot.h>
 #include <iomanip>
 
 int main() {
@@ -72,6 +72,23 @@ int main() {
   // for (const int num : distribution) {
   //   std::cout << num << ", " << std::endl;
   // }
+  // sciplot::Plot2D plot;
+  // sciplot::Vec x = sciplot::linspace(
+  //     0.0, MLConstants::LinearConstants::EPOCHS,
+  //     10);
+  // plot.drawCurveWithPoints(x, losses);
+  // sciplot::Figure fig{{plot}};
+  // const sciplot::Canvas canv{{fig}};
+  // canv.save("loss_curve_images/loss.png");
+  // canv.show();
+  ImGui::Begin("My Window");
+  if (ImPlot::BeginPlot("My Plot")) {
+    ImPlot::PlotBars("My Bar Plot", bar_data, 11);
+    ImPlot::PlotLine("My Line Plot", x_data, y_data, 1000);
+    ...
+    ImPlot::EndPlot();
+  }
+  ImGui::End();
   std::cout << "Losses: " << std::endl;
   for (const double loss : losses) {
     std::cout << std::fixed << std::setprecision(2) << loss << ", ";
