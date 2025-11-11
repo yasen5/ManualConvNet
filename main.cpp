@@ -7,6 +7,9 @@
 #include "Common/softmax_layer.h"
 #include "third_party/tqdm.cpp/include/tqdm/tqdm.h"
 #include <iomanip>
+// #include <matplot/matplot.h>
+
+// using namespace matplot;
 
 int main() {
   const std::vector<ClassifiedImg> read =
@@ -44,22 +47,8 @@ int main() {
     for (const auto& [img, flattened, digit, one_hot] : train) {
       distribution[digit]++;
       net.SetInputs(flattened);
-      if (verbose) {
-        std::cout << "One hot: " << one_hot << std::endl;
-        std::cout << "Actual: " << static_cast<int>(digit) <<
-            std::endl;
-        std::cout << "Predicted: " << std::endl;
-        const Eigen::VectorXf output = net.Predict();
-        std::cout << "Output: " << output << std::endl;
-        std::cout << "=============================" << std::endl;
-      }
-
       const float curr_loss = net.Backprop(one_hot,
                                            MLConstants::LinearConstants::LEARNING_RATE);
-      // if (i >= MLConstants::LinearConstants::EPOCHS / 2 && abs(curr_loss) > 1) {
-      //   std::cout << "Pred: " << net.Predict();
-      //   std::cout << "Actual: " << one_hot << std::endl;
-      // }
       epoch_loss += curr_loss;
     }
     epoch_loss /= train.size();
@@ -67,33 +56,11 @@ int main() {
       losses[i / (MLConstants::LinearConstants::EPOCHS / 10)] = epoch_loss;
     }
   }
-  // std::cout << "Distribution: " << std::endl;
-  // for (const int num : distribution) {
-  //   std::cout << num << ", " << std::endl;
-  // }
-  // sciplot::Plot2D plot;
-  // sciplot::Vec x = sciplot::linspace(
-  //     0.0, MLConstants::LinearConstants::EPOCHS,
-  //     10);
-  // plot.drawCurveWithPoints(x, losses);
-  // sciplot::Figure fig{{plot}};
-  // const sciplot::Canvas canv{{fig}};
-  // canv.save("loss_curve_images/loss.png");
-  // canv.show();
   std::cout << "Losses: " << std::endl;
   for (const double loss : losses) {
     std::cout << std::fixed << std::setprecision(2) << loss << ", ";
   }
   std::cout << std::endl;
-  // for (const auto& [img, flattened, digit, one_hot] : train) {
-  //   net.SetInputs(flattened);
-  //   std::cout << "Actual: " << static_cast<int>(digit) << "\nOne Hot: " <<
-  //       one_hot.transpose() << std::endl;
-  //   std::cout << "Predicted: " << std::endl;
-  //   const Eigen::VectorXf output = net.Predict();
-  //   std::cout << "Output: " << output << std::endl;
-  //   std::cout << "=============================" << std::endl;
-  // }
 
   exit(0);
 }
