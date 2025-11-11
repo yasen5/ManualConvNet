@@ -6,7 +6,7 @@
 #define DENSE_LAYER_H
 #include <vector>
 
-#include "layer.h"
+#include "linear_layer.h"
 
 class DenseLayer final : public Layer {
 public:

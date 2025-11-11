@@ -1,12 +1,11 @@
 #include <iostream>
 
-#include "constants.h"
-#include "dataset.h"
-#include "dense_layer.h"
-#include "dense_net.h"
-#include "softmax_layer.h"
-#include <tqdm/tqdm.h>
-#include <implot/implot.h>
+#include "Common/constants.h"
+#include "Common/dataset.h"
+#include "LinearNet/dense_layer.h"
+#include "LinearNet/dense_net.h"
+#include "Common/softmax_layer.h"
+#include "third_party/tqdm.cpp/include/tqdm/tqdm.h"
 #include <iomanip>
 
 int main() {
@@ -81,14 +80,6 @@ int main() {
   // const sciplot::Canvas canv{{fig}};
   // canv.save("loss_curve_images/loss.png");
   // canv.show();
-  ImGui::Begin("My Window");
-  if (ImPlot::BeginPlot("My Plot")) {
-    ImPlot::PlotBars("My Bar Plot", bar_data, 11);
-    ImPlot::PlotLine("My Line Plot", x_data, y_data, 1000);
-    ...
-    ImPlot::EndPlot();
-  }
-  ImGui::End();
   std::cout << "Losses: " << std::endl;
   for (const double loss : losses) {
     std::cout << std::fixed << std::setprecision(2) << loss << ", ";

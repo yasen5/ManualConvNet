@@ -8,7 +8,7 @@
 
 #include "dense_layer.h"
 #include "input_layer.h"
-#include "layer.h"
+#include "linear_layer.h"
 
 class DenseNet {
 public:

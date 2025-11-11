@@ -4,7 +4,7 @@
 
 #ifndef SOFTMAX_LAYER_H
 #define SOFTMAX_LAYER_H
-#include "layer.h"
+#include "../LinearNet/linear_layer.h"
 
 
 class SoftmaxLayer final : public Layer {

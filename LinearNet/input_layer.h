@@ -4,7 +4,7 @@
 
 #ifndef INPUT_LAYER_H
 #define INPUT_LAYER_H
-#include "layer.h"
+#include "linear_layer.h"
 
 
 class InputLayer final : public Layer {

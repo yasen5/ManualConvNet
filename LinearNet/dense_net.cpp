@@ -6,7 +6,7 @@
 #include <iostream>
 
 #include "input_layer.h"
-#include "softmax_layer.h"
+#include "../Common/softmax_layer.h"
 
 DenseNet::DenseNet() {
   layers_.push_back(std::make_unique<InputLayer>());

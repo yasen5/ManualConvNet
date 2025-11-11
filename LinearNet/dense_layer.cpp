@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-#include "constants.h"
+#include "../Common/constants.h"
 
 void ReLU(Eigen::VectorXf& input) {
   input = input.cwiseMax(0);
