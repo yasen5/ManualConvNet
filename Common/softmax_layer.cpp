@@ -21,7 +21,7 @@ void SoftmaxLayer::Forward(const Eigen::VectorXf& input) {
     expSum += exp(shifted(i));
   }
   for (int i = 0; i < input.rows(); i++) {
-    activation_(i, 0) = exp(shifted(i)) / expSum;
+    activation_(i) = exp(shifted(i)) / expSum;
   }
 }
 
