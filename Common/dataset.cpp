@@ -3,12 +3,6 @@
 #include <sstream>
 #include <iostream>
 
-// Dataset::Dataset(const std::string& dataFolder, bool flatten): datasets_{
-//     ReadData(dataFolder + "/train.csv", flatten),
-//     ReadData(dataFolder + "/valid.csv", flatten),
-//     ReadData(dataFolder + "/test.csv", flatten)}, img_size_(datasets_[0][0].img.size()) {
-// };
-
 std::vector<ClassifiedImg> Dataset::ReadData(const std::string& fileName,
                                              int max_images) {
   std::vector<ClassifiedImg> images;
@@ -67,9 +61,9 @@ std::vector<ClassifiedImg> Dataset::ReadData(const std::string& fileName,
         img(row, col) = std::stof(csvBox) / 255.0;
       }
     }
-    Eigen::VectorXf one_hot(10, 1); // TODO get num_classes_ variable
+    Eigen::VectorXf one_hot(10); // TODO get num_classes_ variable
     one_hot(label, 0) = 1;
-    images.emplace_back(img, flattened, label, one_hot);
+    images.emplace_back(ClassifiedImg{img, flattened, label, one_hot});
     if (max_images != 0 && counter >= max_images) {
       break;
     }
@@ -77,13 +71,3 @@ std::vector<ClassifiedImg> Dataset::ReadData(const std::string& fileName,
   std::cout << "Num images: " << images.size() << std::endl;
   return images;
 }
-
-// std::vector<ClassifiedImg> Dataset::GetData(const Data partition) const {
-//   if (partition > datasets_.size()) {
-//     std::cout << "Partition: " << partition <<
-//         " is unavailable. This might be because the 'valid' category has not been created"
-//         << std::endl;
-//   }
-//   return datasets_.at(partition);
-// }
-
