@@ -8,7 +8,7 @@
 namespace MLConstants {
   class LinearConstants {
   public:
-    static constexpr float LEARNING_RATE = 0.03;
+    static constexpr float LEARNING_RATE = 0.001;
     static constexpr int INPUT_SIZE = 784;
     static constexpr int EPOCHS = 1000;
     static constexpr int NUM_HASHTAGS = 50;

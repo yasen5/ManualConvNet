@@ -30,7 +30,7 @@ const Eigen::VectorXf& DenseNet::Predict() {
 float DenseNet::Backprop(const Eigen::VectorXf& expected,
                          const float learning_rate) {
   const Eigen::VectorXf pred = Predict();
-  const Eigen::VectorXf loss_derivative = pred - expected;
+  const Eigen::VectorXf loss_derivative = (pred - expected) * learning_rate;
   layers_[layers_.size() - 1]->Backward(
       layers_[layers_.size() - 2]->Activation(),
       loss_derivative, learning_rate);
