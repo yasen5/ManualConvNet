@@ -7,29 +7,30 @@ else ()
     add_compile_options(-frtti)   # Enable RTTI for GCC/Clang
 endif ()
 
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-find_package(Eigen3 5.0 REQUIRED NO_MODULE)
-find_package(OpenCV REQUIRED)
-# find_package(Matplot++ REQUIRED)
+# find_package(Eigen3 5.0 REQUIRED NO_MODULE)
+# find_package(OpenCV REQUIRED)
+find_package(Matplot++ REQUIRED)
 
 add_executable(ManualConvNet main.cpp)
-add_subdirectory(LinearNet)
-add_subdirectory(Common)
+# add_subdirectory(LinearNet)
+#add_subdirectory(Common)
 
 target_link_libraries(ManualConvNet
         PRIVATE
-        Eigen3::Eigen
-        ${OpenCV_LIBS}
-        LinearNet
-        Common
-        #        Matplot++::matplot
+        #        Eigen3::Eigen
+        #        ${OpenCV_LIBS}
+        #        LinearNet
+        #        Common
+        Matplot++::matplot
 )
 
 target_include_directories(ManualConvNet
         PRIVATE
-        ${OpenCV_INCLUDE_DIRS}
-        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/tqdm.cpp/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/sciplot/
-        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/
+        #        ${OpenCV_INCLUDE_DIRS}
+        #        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/tqdm.cpp/include
+        #                ${CMAKE_CURRENT_SOURCE_DIR}/third_party/sciplot/
 )

@@ -1,6 +1,4 @@
 #include "dataset.h"
-#include <opencv2/core/eigen.hpp>
-#include <opencv2/core.hpp>
 #include <fstream>
 #include <sstream>
 #include <iostream>
