@@ -15,7 +15,7 @@ void ReLU(Eigen::VectorXf& input) {
 DenseLayer::DenseLayer(int input_size, int output_size): weights_(
       Eigen::MatrixXf::Random(output_size, input_size)),
   biases_(Eigen::VectorXf::Random(output_size)),
-  previous_derivative_(input_size, 1), activation_(output_size, 1) {
+  previous_derivative_(input_size), activation_(output_size) {
   weights_ *= sqrt(2.0 / MLConstants::LinearConstants::INPUT_SIZE);
 }
 

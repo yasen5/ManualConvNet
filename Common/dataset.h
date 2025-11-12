@@ -7,7 +7,7 @@ struct ClassifiedImg {
   Eigen::MatrixXf img;
   Eigen::VectorXf flattened;
   u_int8_t digit; // TODO generalize away from MNIST digits
-  Eigen::MatrixXf one_hot;
+  Eigen::VectorXf one_hot;
 };
 
 class Dataset {

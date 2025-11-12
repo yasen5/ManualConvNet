@@ -7,8 +7,8 @@
 #include <iostream>
 
 SoftmaxLayer::SoftmaxLayer(const int num_inputs) : previous_derivative_(
-                                                       num_inputs, 1),
-                                                   activation_(num_inputs, 1) {
+                                                       num_inputs),
+                                                   activation_(num_inputs) {
 }
 
 
@@ -18,10 +18,10 @@ void SoftmaxLayer::Forward(const Eigen::VectorXf& input) {
   shifted = shifted.array() - shifted.maxCoeff();
   float expSum = 0;
   for (int i = 0; i < input.rows(); i++) {
-    expSum += exp(input(i));
+    expSum += exp(shifted(i));
   }
   for (int i = 0; i < input.rows(); i++) {
-    activation_(i, 0) = exp(input(i)) / expSum;
+    activation_(i, 0) = exp(shifted(i)) / expSum;
   }
 }
 
@@ -46,10 +46,10 @@ void SoftmaxLayer::Backward(const Eigen::VectorXf& prevActivation,
   /*for (int i = 0; i < previous_derivative_.size(); i++) {
     for (int j = 0; j < previous_derivative_.size(); j++) {
       const float calculated = (i == j)
-                                 ? nextDerivative(i, 0) * (
-                                     1 - nextDerivative(i, 0))
-                                 : nextDerivative(i, 0) * -nextDerivative(j, 0);
-      previous_derivative_(i, 0) += calculated;
+                                 ? nextDerivative(i) * (
+                                     1 - nextDerivative(i))
+                                 : nextDerivative(i) * -nextDerivative(j);
+      previous_derivative_(i) += calculated;
     }
   }*/
 }
