@@ -7,9 +7,7 @@ else ()
     add_compile_options(-frtti)   # Enable RTTI for GCC/Clang
 endif ()
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD 23)
 
 find_package(Eigen3 5.0 REQUIRED NO_MODULE)
 find_package(OpenCV REQUIRED)
