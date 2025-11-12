@@ -8,25 +8,25 @@
 
 #include "dense_layer.h"
 #include "input_layer.h"
-#include "layer.h"
+#include "linear_layer.h"
 
 class DenseNet {
-private:
-  std::vector<std::unique_ptr<Layer> > layers_;
-
 public:
   DenseNet();
 
-  const Eigen::MatrixXd& Predict();
+  const Eigen::VectorXf& Predict();
 
-  void Backprop(const Eigen::MatrixXd& expected,
-                double learning_rate);
+  float Backprop(const Eigen::VectorXf& expected,
+                 float learning_rate);
 
   void AddLayer(std::unique_ptr<Layer>&& layer);
 
   void PrintInfo() const;
 
-  void SetInputs(const Eigen::MatrixXd& inputs);
+  void SetInputs(const Eigen::VectorXf& inputs);
+
+private:
+  std::vector<std::unique_ptr<Layer> > layers_;
 };
 
 

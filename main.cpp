@@ -1,44 +1,74 @@
 #include <iostream>
 
-#include "dataset.h"
-#include "dense_layer.h"
-#include "dense_net.h"
-#include "softmax_layer.h"
+#include "Common/constants.h"
+#include "Common/dataset.h"
+#include "LinearNet/dense_layer.h"
+#include "LinearNet/dense_net.h"
+#include "Common/softmax_layer.h"
+#include <iomanip>
+#include <matplot/matplot.h>
+
+using namespace matplot;
 
 int main() {
-  const float LEARNING_RATE = 0.001;
-  std::vector<ClassifiedImg> train =
+  const std::vector<ClassifiedImg> read =
       Dataset::ReadData(
-          "/Users/yasen/CLionProjects/ManualConvNet/Data/train.csv", true);
-  const int img_size = train[0].img.size();
+          "/Users/yasen/CLionProjects/ManualConvNet/Data/train.csv", 30);
+
+  const int img_size = read[0].img.size();
+
+  std::cout << "img_size: " << img_size << std::endl;
 
   DenseNet net;
-  net.AddLayer(
-      std::make_unique<DenseLayer>(DenseLayer(img_size, 128)));
+  net.AddLayer(std::make_unique<DenseLayer>(DenseLayer(img_size, 256)));
+  net.AddLayer(std::make_unique<DenseLayer>(DenseLayer(256, 128)));
   net.AddLayer(std::make_unique<DenseLayer>(DenseLayer(128, 64)));
-  net.AddLayer(std::make_unique<DenseLayer>(DenseLayer(64, 32)));
-  net.AddLayer(std::make_unique<DenseLayer>(DenseLayer(32, 10)));
+  net.AddLayer(std::make_unique<DenseLayer>(DenseLayer(64, 10)));
   net.AddLayer(std::make_unique<SoftmaxLayer>(SoftmaxLayer(10)));
 
-  std::vector<ClassifiedImg> test = Dataset::ReadData(
-      "/Users/yasen/CLionProjects/ManualConvNet/Data/test.csv", true, 3);
-
-  for (int i = 0; i < 6; i++) {
-    for (const ClassifiedImg& classified_img : train) {
-      for (const auto& [img, digit, one_hot] : test) {
-        std::cout << "img sum: " << img.sum() << std::endl;
-        net.SetInputs(img);
-        std::cout << "Actual: " << static_cast<int>(digit) << std::endl;
-        std::cout << "Predicted: " << net.Predict() << std::endl;
-        std::cout << "=============================" << std::endl;
-        break;
-      }
-      net.SetInputs(classified_img.img);
-      net.Backprop(classified_img.one_hot, LEARNING_RATE);
-      // net.PrintInfo();
-      break;
+  // std::vector<ClassifiedImg> test = Dataset::ReadData(
+  //     "/Users/yasen/CLionProjects/ManualConvNet/Data/test.csv", 3);
+  std::vector<ClassifiedImg> train;
+  for (const ClassifiedImg& img : read) {
+    if (img.digit == 9 || img.digit == 7) {
+      train.push_back(img);
     }
   }
+  if (train.empty()) {
+    std::cout << "No 9s in the set " << std::endl;
+    exit(0);
+  }
+  std::vector<float> losses(10);
+  std::vector<int> distribution(10);
+  for (int i = 0; i < MLConstants::LinearConstants::EPOCHS; i++) {
+    if (i % (MLConstants::LinearConstants::EPOCHS /
+             MLConstants::LinearConstants::NUM_HASHTAGS) == 0) {
+      std::cout << "#";
+    }
+    float epoch_loss = 0;
+    for (const auto& [img, flattened, digit, one_hot] : train) {
+      distribution[digit]++;
+      net.SetInputs(flattened);
+      const float curr_loss = net.Backprop(one_hot,
+                                           MLConstants::LinearConstants::LEARNING_RATE);
+      epoch_loss += curr_loss;
+    }
+    epoch_loss /= train.size();
+    if (i % (MLConstants::LinearConstants::EPOCHS / 10) == 0) {
+      losses[i / (MLConstants::LinearConstants::EPOCHS / 10)] = epoch_loss;
+    }
+  }
+  std::cout << "Losses: " << std::endl;
+  for (const double loss : losses) {
+    std::cout << std::fixed << std::setprecision(2) << loss << ", ";
+  }
+  std::cout << std::endl;
+
+  const std::vector<double> x = linspace(
+      0, MLConstants::LinearConstants::EPOCHS, 10);
+  plot(x, losses, "-o");
+  hold(on);
+  show();
 
   exit(0);
 }
