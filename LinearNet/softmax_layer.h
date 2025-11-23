@@ -1,16 +1,15 @@
 //
-// Created by Yasen on 9/18/25.
+// Created by Yasen on 10/3/25.
 //
 
-#ifndef DENSE_LAYER_H
-#define DENSE_LAYER_H
-#include <vector>
-
+#ifndef SOFTMAX_LAYER_H
+#define SOFTMAX_LAYER_H
 #include "linear_layer.h"
 
-class DenseLayer final : public LinearLayer {
+
+class SoftmaxLayer final : public LinearLayer {
 public:
-  DenseLayer(int input_size, int output_size);
+  SoftmaxLayer(int num_inputs);
 
   void Forward(const Eigen::VectorXf &input) override;
 
@@ -18,22 +17,22 @@ public:
                 const Eigen::VectorXf &nextDerivative,
                 float learningRate) override;
 
-  const Eigen::VectorXf &Activation() override { return activation_; }
+  const Eigen::VectorXf &Activation() override {
+    return activation_;
+  }
 
   const Eigen::VectorXf &PreviousDerivative() override {
     return previous_derivative_;
   }
 
-  void PrintInfo() const override;
-
   void SetWeights(Eigen::MatrixXf &new_weights) override;
 
+  void PrintInfo() const override;
+
 private:
-  Eigen::MatrixXf weights_;
-  Eigen::VectorXf biases_;
   Eigen::VectorXf previous_derivative_;
   Eigen::VectorXf activation_;
 };
 
 
-#endif //DENSE_LAYER_H
+#endif //SOFTMAX_LAYER_H

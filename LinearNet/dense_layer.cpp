@@ -29,11 +29,6 @@ void DenseLayer::Backward(const Eigen::VectorXf& prevActivation,
                           const float learningRate) {
   weights_ += nextDerivative * prevActivation.transpose();
   biases_ += nextDerivative;
-  // Eigen::ArrayXf arr1 = (activation_.array() > 0).cast<float>();
-  // Eigen::ArrayXf arr2 = (weights_.transpose() * nextDerivative).array();
-  // std::cout << "Arr1dims: " << arr1.rows() << " x " << arr1.cols() <<
-  //     " arr2dims: " << arr2.rows() << " x " << arr2.cols() << std::endl;
-  // Eigen::ArrayXf result = arr1 * arr2;
   previous_derivative_ = (weights_.transpose() * nextDerivative).array() *
                          (prevActivation.array() > 0).cast<float>();
 }

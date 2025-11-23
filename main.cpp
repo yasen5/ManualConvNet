@@ -4,18 +4,18 @@
 #include "Common/dataset.h"
 #include "LinearNet/dense_layer.h"
 #include "LinearNet/dense_net.h"
-#include "Common/softmax_layer.h"
+#include "LinearNet/softmax_layer.h"
 #include <iomanip>
 #include <matplot/matplot.h>
 
-using namespace matplot;
+#include "ConvNet/conv_net.h"
 
-int main() {
-  const std::vector<ClassifiedImg> read =
+static void trainDense() {
+  const std::vector<ClassifiedImg> train =
       Dataset::ReadData(
           "/Users/yasen/CLionProjects/ManualConvNet/Data/train.csv", 30);
 
-  const int img_size = read[0].img.size();
+  const int img_size = train[0].img.size();
 
   std::cout << "img_size: " << img_size << std::endl;
 
@@ -26,14 +26,6 @@ int main() {
   net.AddLayer(std::make_unique<DenseLayer>(DenseLayer(64, 10)));
   net.AddLayer(std::make_unique<SoftmaxLayer>(SoftmaxLayer(10)));
 
-  // std::vector<ClassifiedImg> test = Dataset::ReadData(
-  //     "/Users/yasen/CLionProjects/ManualConvNet/Data/test.csv", 3);
-  std::vector<ClassifiedImg> train;
-  for (const ClassifiedImg& img : read) {
-    if (img.digit == 9 || img.digit == 7) {
-      train.push_back(img);
-    }
-  }
   if (train.empty()) {
     std::cout << "No 9s in the set " << std::endl;
     exit(0);
@@ -64,11 +56,19 @@ int main() {
   }
   std::cout << std::endl;
 
-  const std::vector<double> x = linspace(
+  const std::vector<double> x = matplot::linspace(
       0, MLConstants::LinearConstants::EPOCHS, 10);
-  plot(x, losses, "-o");
-  hold(on);
-  show();
+  matplot::plot(x, losses, "-o");
+  matplot::hold(matplot::on);
+  matplot::show();
 
   exit(0);
+}
+
+static void trainConv() {
+  ConvNet net;
+}
+
+int main() {
+  trainConv();
 }

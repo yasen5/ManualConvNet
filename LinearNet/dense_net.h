@@ -19,14 +19,14 @@ public:
   float Backprop(const Eigen::VectorXf& expected,
                  float learning_rate);
 
-  void AddLayer(std::unique_ptr<Layer>&& layer);
+  void AddLayer(std::unique_ptr<LinearLayer>&& layer);
 
   void PrintInfo() const;
 
   void SetInputs(const Eigen::VectorXf& inputs);
 
 private:
-  std::vector<std::unique_ptr<Layer> > layers_;
+  std::vector<std::unique_ptr<LinearLayer> > layers_;
 };
 
 

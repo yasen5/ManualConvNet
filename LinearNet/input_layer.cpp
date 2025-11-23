@@ -33,6 +33,3 @@ void InputLayer::SetWeights(Eigen::MatrixXf& new_weights) {
 void InputLayer::SetInputs(const Eigen::VectorXf& inputs) {
   inputs_ = &inputs;
 }
-
-
-

@@ -7,7 +7,7 @@
 #include "linear_layer.h"
 
 
-class InputLayer final : public Layer {
+class InputLayer final : public LinearLayer {
 public:
   void Forward(const Eigen::VectorXf& input) override;
 

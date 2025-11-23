@@ -4,27 +4,51 @@
 
 #include "conv_layer.h"
 
-ConvLayer::ConvLayer(const uint16_t in_channels, const uint16_t out_channels, const uint8_t kernel_sz, const uint8_t stride, const uint8_t padding) : kernels(out_channels), kernel_sz(kernel_sz), stride(stride), padding(padding) {
-    for (int i = 0; i < out_channels; i++) {
-        kernels[i] = Matrices::initKernel(in_channels, kernel_sz);
-    }
+ConvLayer::ConvLayer(const int in_channels, const int out_channels,
+                     const int kernel_sz, const int stride,
+                     const int padding) : kernels_(out_channels),
+                                          kernel_sz_(kernel_sz),
+                                          stride_(stride),
+                                          padding_(padding),
+                                          activation_(out_channels),
+                                          prev_derivative_(in_channels) {
+  for (int i = 0; i < out_channels; i++) {
+    kernels_[i] = Matrices::initKernel(in_channels, kernel_sz);
+  }
 }
 
-void ConvLayer::info() const {
-    std::cout << "Kernels: " << kernels.size() << "\tStride: " << static_cast<int>(stride) << "\tPadding: " << static_cast<int>(padding) << std::endl;
-    int kernelCounter = 0;
-    for (const Img& img : kernels) {
-        kernelCounter++;
-        std::cout << "Kernel " << kernelCounter << " : " << std::endl;
-        Matrices::printImg(img);
-    }
+void ConvLayer::PrintInfo() const {
+  std::cout << "Kernels: " << kernels_.size() << "\tStride: " <<
+      stride_ << "\tPadding: " << padding_ << std::endl;
+  int kernelCounter = 0;
+  for (const Img& img : kernels_) {
+    kernelCounter++;
+    std::cout << "Kernel " << kernelCounter << " : " << std::endl;
+    Matrices::printImg(img);
+  }
 }
 
-Img ConvLayer::activation(const Img& input) const {
-    Img output;
-    output.reserve(kernels.size());
-    for (const Img& kernel : kernels) {
-        output.push_back(Matrices::crossCorrelation(input, kernel, stride, padding));
-    }
-    return output;
+void ConvLayer::Forward(const Img& input) {
+  for (size_t i = 0; i < input.size(); i++) {
+    activation_[i] = Matrices::crossCorrelation(input, kernels_[i], stride_,
+                                                padding_);
+    activation_[i].array() += biases_(i);
+  }
 }
+
+const Img& ConvLayer::Activation() {
+  return activation_;
+}
+
+const Img& ConvLayer::PreviousDerivative() {
+  return prev_derivative_;
+}
+
+void ConvLayer::SetWeights(Img& new_weights) {
+  weights_ = new_weights;
+}
+
+void ConvLayer::Backward(const Img& prevActivation, const Img& nextDerivative,
+                         float learningRate) {
+}
+

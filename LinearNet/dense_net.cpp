@@ -6,7 +6,7 @@
 #include <iostream>
 
 #include "input_layer.h"
-#include "../Common/softmax_layer.h"
+#include "softmax_layer.h"
 
 DenseNet::DenseNet() {
   layers_.push_back(std::make_unique<InputLayer>());
@@ -44,14 +44,15 @@ float DenseNet::Backprop(const Eigen::VectorXf& expected,
   return cross_entropy_loss;
 }
 
-void DenseNet::AddLayer(std::unique_ptr<Layer>&& layer) {
+void DenseNet::AddLayer(std::unique_ptr<LinearLayer>&& layer) {
   layers_.push_back(std::move(layer));
 }
 
 void DenseNet::PrintInfo() const {
   std::cout << "Layers: " << std::endl;
   for (int i = 1; i < layers_.size(); i++) {
-    std::cout << "===========" << " Layer " << i << " ===========" << std::endl;
+    std::cout << "===========" << " LinearLayer " << i << " ===========" <<
+        std::endl;
     layers_[i]->PrintInfo();
   }
 }
@@ -60,6 +61,6 @@ void DenseNet::SetInputs(const Eigen::VectorXf& inputs) {
   if (InputLayer* inputLayer = dynamic_cast<InputLayer*>(layers_[0].get())) {
     inputLayer->SetInputs(inputs);
   } else {
-    throw std::runtime_error("Layer 0 is not an InputLayer");
+    throw std::runtime_error("LinearLayer 0 is not an InputLayer");
   }
 }

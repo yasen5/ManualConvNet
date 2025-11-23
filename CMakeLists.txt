@@ -13,9 +13,9 @@ find_package(Eigen3 5.0 REQUIRED NO_MODULE)
 find_package(OpenCV REQUIRED)
 find_package(Matplot++ REQUIRED)
 
-add_executable(ManualConvNet main.cpp
-)
+add_executable(ManualConvNet main.cpp)
 add_subdirectory(LinearNet)
+add_subdirectory(ConvNet)
 add_subdirectory(Common)
 
 target_link_libraries(ManualConvNet
@@ -23,6 +23,7 @@ target_link_libraries(ManualConvNet
         Eigen3::Eigen
         ${OpenCV_LIBS}
         LinearNet
+        ConvNet
         Common
         Matplot++::matplot
 )
