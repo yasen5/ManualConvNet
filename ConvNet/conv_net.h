@@ -12,6 +12,8 @@ class LinearLayer;
 
 class ConvNet {
 public:
+  ConvNet();
+
   const Eigen::VectorXf& Predict();
 
   float Backprop(const Eigen::VectorXf& expected,

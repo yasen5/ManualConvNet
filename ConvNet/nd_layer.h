@@ -23,7 +23,7 @@ public:
 
   virtual const Img& PreviousDerivative() = 0;
 
-  virtual void SetWeights(Img& new_weights) = 0;
+  virtual void SetWeights(std::vector<Img>& new_weights) = 0;
 
   virtual void PrintInfo() const = 0;
 };

@@ -24,7 +24,7 @@ public:
 
     const Img &PreviousDerivative() override;
 
-    void SetWeights(Img &new_weights) override;
+    void SetWeights(std::vector<Img> &new_weights) override;
 
     void PrintInfo() const override;
 

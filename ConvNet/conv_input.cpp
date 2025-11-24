@@ -8,7 +8,7 @@
 
 void ConvInput::PrintInfo() const {
   std::cout << "=============== Input Layer with " << ((inputs_ != nullptr)
-      ? inputs_->size()
+      ? std::to_string(inputs_->size())
       : " (uninitialized) ") << " channels " << std::endl;
 }
 
@@ -22,9 +22,10 @@ void ConvInput::Forward(const Img& input) {
 
 const Img& ConvInput::PreviousDerivative() {
   std::cerr << "Calling previous derivative on an input layer" << std::endl;
+  std::exit(1);
 }
 
-void ConvInput::SetWeights(Img& new_weights) {
+void ConvInput::SetWeights(std::vector<Img>& new_weights) {
   std::cerr << "Settings weights on an input layer" << std::endl;
 }
 
@@ -32,4 +33,9 @@ void ConvInput::Backward(const Img& prevActivation, const Img& nextDerivative,
                          float learningRate) {
   std::cerr << "Calling backprop on an input layer" << std::endl;
 }
+
+void ConvInput::SetInputs(const Img& inputs) {
+  inputs_ = &inputs;
+}
+
 

@@ -44,8 +44,8 @@ const Img& ConvLayer::PreviousDerivative() {
   return prev_derivative_;
 }
 
-void ConvLayer::SetWeights(Img& new_weights) {
-  weights_ = new_weights;
+void ConvLayer::SetWeights(std::vector<Img>& new_weights) {
+  kernels_ = new_weights;
 }
 
 void ConvLayer::Backward(const Img& prevActivation, const Img& nextDerivative,
