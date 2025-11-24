@@ -8,6 +8,7 @@
 
 ConvNet::ConvNet() {
   conv_layers_.push_back(std::unique_ptr<ConvInput>());
+  connected_layers_.push_back(std::unique_ptr<InputLayer>());
 }
 
 void ConvNet::AddLayer(std::unique_ptr<ConvLayer>&& layer) {

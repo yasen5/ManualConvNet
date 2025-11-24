@@ -9,6 +9,7 @@
 #include <matplot/matplot.h>
 
 #include "ConvNet/conv_net.h"
+#include "ConvNet/visualizer.h"
 
 static void trainDense() {
   const std::vector<ClassifiedImg> train =
@@ -66,7 +67,19 @@ static void trainDense() {
 }
 
 static void trainConv() {
-  ConvNet net;
+  ConvLayer layer(1, 1, 3, 1, 1);
+  const std::vector<ClassifiedImg> train =
+      Dataset::ReadData(
+          "/Users/yasen/CLionProjects/ManualConvNet/Data/train.csv", 1);
+  Eigen::MatrixXf edge_detector(3, 3);
+  edge_detector <<
+      1, 0, -1,
+      1, 0, -1,
+      1, 0, -1;
+  auto edge_img = std::vector<Img>{Img{edge_detector}};
+  layer.SetWeights(edge_img);
+  layer.Forward(Img{train[0].img});
+  Visualizer::display("Output: ", layer.Activation()[0]);
 }
 
 int main() {

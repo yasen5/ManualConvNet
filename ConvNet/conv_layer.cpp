@@ -7,11 +7,14 @@
 ConvLayer::ConvLayer(const int in_channels, const int out_channels,
                      const int kernel_sz, const int stride,
                      const int padding) : kernels_(out_channels),
+                                          biases_(
+                                              Eigen::VectorXf::Constant(
+                                                  out_channels, 1000)),
+                                          activation_(out_channels),
+                                          prev_derivative_(in_channels),
                                           kernel_sz_(kernel_sz),
                                           stride_(stride),
-                                          padding_(padding),
-                                          activation_(out_channels),
-                                          prev_derivative_(in_channels) {
+                                          padding_(padding) {
   for (int i = 0; i < out_channels; i++) {
     kernels_[i] = Matrices::initKernel(in_channels, kernel_sz);
   }
@@ -31,7 +34,7 @@ void ConvLayer::PrintInfo() const {
 void ConvLayer::Forward(const Img& input) {
   for (size_t i = 0; i < input.size(); i++) {
     activation_[i] = Matrices::crossCorrelation(input, kernels_[i], stride_,
-                                                padding_);
+                                                padding_, false);
     activation_[i].array() += biases_(i);
   }
 }
