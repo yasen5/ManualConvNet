@@ -6,17 +6,15 @@
 #define CONV_NET_H
 
 #include "conv_layer.h"
-#include "../LinearNet/input_layer.h"
+#include "../LinearNet/linear_layer.h"
 
 class LinearLayer;
 
 class ConvNet {
 public:
-  ConvNet();
+  const Eigen::VectorXf& Predict(const Img& input);
 
-  const Eigen::VectorXf& Predict();
-
-  float Backprop(const Eigen::VectorXf& expected,
+  float Backprop(const Img& input, const Eigen::VectorXf& expected,
                  float learning_rate);
 
   void AddLayer(std::unique_ptr<LinearLayer>&& layer);
@@ -24,8 +22,6 @@ public:
   void AddLayer(std::unique_ptr<ConvLayer>&& layer);
 
   void PrintInfo() const;
-
-  void SetInputs(const Img& inputs);
 
 private:
   std::vector<std::unique_ptr<NDLayer> > conv_layers_;

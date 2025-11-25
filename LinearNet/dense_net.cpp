@@ -5,15 +5,10 @@
 #include "dense_net.h"
 #include <iostream>
 
-#include "input_layer.h"
 #include "softmax_layer.h"
 
-DenseNet::DenseNet() {
-  layers_.push_back(std::make_unique<InputLayer>());
-}
-
-
-const Eigen::VectorXf& DenseNet::Predict() {
+const Eigen::VectorXf& DenseNet::Predict(const Eigen::VectorXf& input) {
+  layers_[0]->Forward(input);
   for (int i = 1; i < layers_.size(); i++) {
     layers_[i]->Forward(layers_[i - 1]->Activation());
     for (const float val : layers_[i]->Activation()) {
@@ -27,15 +22,16 @@ const Eigen::VectorXf& DenseNet::Predict() {
   return layers_[layers_.size() - 1]->Activation();
 }
 
-float DenseNet::Backprop(const Eigen::VectorXf& expected,
+float DenseNet::Backprop(const Eigen::VectorXf& input,
+                         const Eigen::VectorXf& expected,
                          const float learning_rate) {
-  const Eigen::VectorXf pred = Predict();
+  const Eigen::VectorXf pred = Predict(input);
   const Eigen::VectorXf loss_derivative = (pred - expected) * learning_rate;
   layers_[layers_.size() - 1]->Backward(
       layers_[layers_.size() - 2]->Activation(),
       loss_derivative, learning_rate);
-  for (size_t i = layers_.size() - 2; i > 0; i--) {
-    layers_[i]->Backward(layers_.at(i - 1)->Activation(),
+  for (int i = layers_.size() - 2; i >= 0; i--) {
+    layers_[i]->Backward((i == 0) ? input : layers_.at(i - 1)->Activation(),
                          layers_.at(i + 1)->PreviousDerivative(),
                          learning_rate);
   }
@@ -54,13 +50,5 @@ void DenseNet::PrintInfo() const {
     std::cout << "===========" << " LinearLayer " << i << " ===========" <<
         std::endl;
     layers_[i]->PrintInfo();
-  }
-}
-
-void DenseNet::SetInputs(const Eigen::VectorXf& inputs) {
-  if (InputLayer* inputLayer = dynamic_cast<InputLayer*>(layers_[0].get())) {
-    inputLayer->SetInputs(inputs);
-  } else {
-    throw std::runtime_error("LinearLayer 0 is not an InputLayer");
   }
 }

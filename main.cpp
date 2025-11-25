@@ -41,8 +41,7 @@ static void trainDense() {
     float epoch_loss = 0;
     for (const auto& [img, flattened, digit, one_hot] : train) {
       distribution[digit]++;
-      net.SetInputs(flattened);
-      const float curr_loss = net.Backprop(one_hot,
+      const float curr_loss = net.Backprop(flattened, one_hot,
                                            MLConstants::LinearConstants::LEARNING_RATE);
       epoch_loss += curr_loss;
     }
@@ -83,5 +82,5 @@ static void trainConv() {
 }
 
 int main() {
-  trainConv();
+  trainDense();
 }
