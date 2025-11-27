@@ -23,6 +23,10 @@ public:
 
   void PrintInfo() const;
 
+  Eigen::VectorXf ConvToLinear(const Img& convImg);
+
+  Img LinearToConv(const Eigen::VectorXf& vec, int channels);
+
 private:
   std::vector<std::unique_ptr<NDLayer> > conv_layers_;
   std::vector<std::unique_ptr<LinearLayer> > connected_layers_;

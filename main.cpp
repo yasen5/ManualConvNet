@@ -10,6 +10,7 @@
 
 #include "ConvNet/conv_net.h"
 #include "ConvNet/visualizer.h"
+#include "unordered_set"
 
 static void trainDense() {
   const std::vector<ClassifiedImg> train =
@@ -66,21 +67,21 @@ static void trainDense() {
 }
 
 static void trainConv() {
-  ConvLayer layer(1, 1, 3, 1, 1);
   const std::vector<ClassifiedImg> train =
       Dataset::ReadData(
-          "/Users/yasen/CLionProjects/ManualConvNet/Data/train.csv", 1);
-  Eigen::MatrixXf edge_detector(3, 3);
-  edge_detector <<
-      1, 0, -1,
-      1, 0, -1,
-      1, 0, -1;
-  auto edge_img = std::vector<Img>{Img{edge_detector}};
-  layer.SetWeights(edge_img);
-  layer.Forward(Img{train[0].img});
-  Visualizer::display("Output: ", layer.Activation()[0]);
+          "/Users/yasen/CLionProjects/ManualConvNet/Data/train.csv", 30);
+
+  ConvNet net;
+  net.AddLayer(std::make_unique<ConvLayer>(ConvLayer(1, 3, 3, 1, 0)));
+  net.AddLayer(std::make_unique<ConvLayer>(ConvLayer(3, 9, 3, 1, 0)));
+  net.AddLayer(std::make_unique<ConvLayer>(ConvLayer(9, 27, 3, 1, 0)));
+  net.AddLayer(std::make_unique<ConvLayer>(ConvLayer(27, 10, 3, 1, 0)));
+  net.AddLayer(std::make_unique<DenseLayer>(DenseLayer(10 * 20 * 20, 10)));
+  net.AddLayer(std::make_unique<SoftmaxLayer>(SoftmaxLayer(10)));
+  net.Backprop(Img{train[0].img}, train[0].one_hot,
+               MLConstants::LinearConstants::LEARNING_RATE);
 }
 
 int main() {
-  trainDense();
+  trainConv();
 }

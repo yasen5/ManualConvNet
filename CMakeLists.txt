@@ -8,6 +8,7 @@ else ()
 endif ()
 
 set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
 find_package(Eigen3 5.0 REQUIRED NO_MODULE)
 find_package(OpenCV REQUIRED)
