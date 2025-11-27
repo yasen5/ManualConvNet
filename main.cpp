@@ -83,5 +83,16 @@ static void trainConv() {
 }
 
 int main() {
-  trainConv();
+  const std::vector<ClassifiedImg> train =
+      Dataset::ReadData(
+          "/Users/yasen/CLionProjects/ManualConvNet/Data/train.csv", 1);
+
+  Eigen::MatrixXf corner_kernel(3, 3);
+  corner_kernel <<
+      1, 4, 1,
+      4, -20, 4,
+      1, 4, 1;
+  Eigen::MatrixXf result = Matrices::CrossCorrelate(
+      train[0].img, corner_kernel, 1, 0, false);
+  Visualizer::display("Result", result);
 }
