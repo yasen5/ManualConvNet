@@ -35,7 +35,7 @@ void ConvLayer::Forward(const Img& input) {
     activation_[out_channels] = Matrices::CrossCorrelation(
         input, kernels_[out_channels], stride_,
         padding_, false);
-    activation_[out_channels].array() += biases_(out_channels);
+    // activation_[out_channels].array() += biases_(out_channels);
   }
 }
 

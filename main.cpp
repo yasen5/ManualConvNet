@@ -78,9 +78,10 @@ static void trainConv() {
   net.AddLayer(std::make_unique<ConvLayer>(ConvLayer(27, 10, 3, 1, 0)));
   net.AddLayer(std::make_unique<DenseLayer>(DenseLayer(10 * 20 * 20, 10)));
   net.AddLayer(std::make_unique<SoftmaxLayer>(SoftmaxLayer(10)));
-  for (int iter = 0; iter < 5; iter++) {
-    net.Backprop(Img{train[0].img}, train[0].one_hot,
-                 MLConstants::LinearConstants::LEARNING_RATE);
+  for (int iter = 0; iter < 50; iter++) {
+    std::cout << "Loss: " << net.Backprop(Img{train[0].img}, train[0].one_hot,
+                                          MLConstants::LinearConstants::LEARNING_RATE)
+        << std::endl;
   }
 }
 
