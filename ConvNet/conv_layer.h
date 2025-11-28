@@ -12,7 +12,8 @@
 
 class ConvLayer final : public NDLayer {
 public:
-  ConvLayer(int in_channels, int out_channels, int kernel_sz, int stride,
+  ConvLayer(int in_channels, int img_dims, int out_channels, int kernel_sz,
+            int stride,
             int padding);
 
   void Forward(const Img& input) override;
@@ -38,7 +39,7 @@ public:
 
 private:
   std::vector<Img> kernels_;
-  Eigen::VectorXf biases_;
+  Img kernel_grad_;
   Img activation_;
   Img prev_derivative_;
   const int kernel_sz_, stride_, padding_;

@@ -4,14 +4,19 @@
 
 #include "conv_layer.h"
 
-ConvLayer::ConvLayer(const int in_channels, const int out_channels,
+ConvLayer::ConvLayer(const int in_channels, const int img_dims,
+                     const int out_channels,
                      const int kernel_sz, const int stride,
                      const int padding) : kernels_(out_channels),
-                                          biases_(
-                                              Eigen::VectorXf::Random(
-                                                  out_channels)),
+                                          kernel_grad_(
+                                              in_channels,
+                                              Eigen::MatrixXf::Zero(
+                                                  kernel_sz, kernel_sz)),
                                           activation_(out_channels),
-                                          prev_derivative_(in_channels),
+                                          prev_derivative_(
+                                              in_channels,
+                                              Eigen::MatrixXf::Zero(
+                                                  img_dims, img_dims)),
                                           kernel_sz_(kernel_sz),
                                           stride_(stride),
                                           padding_(padding) {
@@ -32,10 +37,9 @@ void ConvLayer::PrintInfo() const {
 void ConvLayer::Forward(const Img& input) {
   for (size_t out_channels = 0; out_channels < kernels_.size(); out_channels
        ++) {
-    activation_[out_channels] = Matrices::CrossCorrelation(
+    activation_[out_channels] = std::move(Matrices::CrossCorrelation(
         input, kernels_[out_channels], stride_,
-        padding_, false);
-    // activation_[out_channels].array() += biases_(out_channels);
+        padding_, false));
   }
 }
 
@@ -74,9 +78,9 @@ void ConvLayer::AddImages(Img& operand, const Img& img2) {
 
 void ConvLayer::Backward(const Img& prevActivation, const Img& nextDerivative,
                          float learningRate) {
-  prev_derivative_ = Img(prevActivation.size(), Eigen::MatrixXf::Zero(
-                             prevActivation[0].rows(),
-                             prevActivation[0].cols()));
+  for (Eigen::MatrixXf& mat : prev_derivative_) {
+    mat.setZero();
+  }
   for (int input_channel = 0; input_channel < prevActivation.size();
        input_channel++) {
     for (int output_channel = 0; output_channel < nextDerivative.size();
@@ -87,20 +91,20 @@ void ConvLayer::Backward(const Img& prevActivation, const Img& nextDerivative,
           padding_, false);
     }
   }
+  const int row_steps = (prevActivation.at(0).rows() + 2 * padding_ -
+                         kernel_sz_) / stride_ + 1;
+  const int col_steps = (prevActivation.at(0).cols() + 2 * padding_ -
+                         kernel_sz_) / stride_ + 1;
   for (size_t output_channel = 0; output_channel < nextDerivative.size();
        output_channel++) {
-    const int row_steps = (prevActivation.at(0).rows() + 2 * padding_ -
-                           kernel_sz_) / stride_ + 1;
-    const int col_steps = (prevActivation.at(0).cols() + 2 * padding_ -
-                           kernel_sz_) / stride_ + 1;
     for (int row = 0; row < row_steps; row++) {
       for (int col = 0; col < col_steps; col++) {
-        Img kernel_derivative = ImgBlock(
+        kernel_grad_ = ImgBlock(
             prevActivation, row, col,
             kernel_sz_, kernel_sz_);
-        ScaleImg(kernel_derivative, nextDerivative[output_channel](
+        ScaleImg(kernel_grad_, nextDerivative[output_channel](
                      row, col));
-        AddImages(kernels_[output_channel], kernel_derivative);
+        AddImages(kernels_[output_channel], kernel_grad_);
       }
     }
   }

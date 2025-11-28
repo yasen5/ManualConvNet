@@ -72,10 +72,10 @@ static void trainConv() {
           "/Users/yasen/CLionProjects/ManualConvNet/Data/train.csv", 1);
 
   ConvNet net;
-  net.AddLayer(std::make_unique<ConvLayer>(ConvLayer(1, 3, 3, 1, 0)));
-  net.AddLayer(std::make_unique<ConvLayer>(ConvLayer(3, 9, 3, 1, 0)));
-  net.AddLayer(std::make_unique<ConvLayer>(ConvLayer(9, 27, 3, 1, 0)));
-  net.AddLayer(std::make_unique<ConvLayer>(ConvLayer(27, 10, 3, 1, 0)));
+  net.AddLayer(std::make_unique<ConvLayer>(ConvLayer(1, 28, 3, 3, 1, 0)));
+  net.AddLayer(std::make_unique<ConvLayer>(ConvLayer(3, 26, 9, 3, 1, 0)));
+  net.AddLayer(std::make_unique<ConvLayer>(ConvLayer(9, 24, 27, 3, 1, 0)));
+  net.AddLayer(std::make_unique<ConvLayer>(ConvLayer(27, 22, 10, 3, 1, 0)));
   net.AddLayer(std::make_unique<DenseLayer>(DenseLayer(10 * 20 * 20, 10)));
   net.AddLayer(std::make_unique<SoftmaxLayer>(SoftmaxLayer(10)));
   for (int iter = 0; iter < 50; iter++) {

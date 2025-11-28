@@ -12,15 +12,22 @@ typedef std::vector<Eigen::MatrixXf> Img;
 using Eigen::MatrixXf;
 
 class Matrices {
+private:
+  static Eigen::MatrixXf padded;
+  static Eigen::MatrixXf output;
+
 public:
   static MatrixXf CrossCorrelation(const Img& image, const Img& kernel,
                                    int stride, int padding,
                                    bool verbose);
 
-  static float FrobeniusInner(const MatrixXf& input, const MatrixXf& kernel);
-
   static MatrixXf FullConvolve(const MatrixXf& mat, const MatrixXf& kernel,
                                int stride, int padding, bool verbose);
+
+  static inline float FrobeniusInner(const MatrixXf& operand,
+                                     const MatrixXf& mat) {
+    return (operand.array() * mat.array()).sum();
+  }
 
   static MatrixXf CrossCorrelate(const MatrixXf& mat, const MatrixXf& kernel,
                                  int stride, int padding, bool verbose);

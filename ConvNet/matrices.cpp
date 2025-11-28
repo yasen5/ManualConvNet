@@ -5,6 +5,9 @@
 #include "matrices.h"
 #include <iostream>
 
+Eigen::MatrixXf Matrices::padded;
+Eigen::MatrixXf Matrices::output;
+
 MatrixXf Matrices::CrossCorrelation(const Img& image, const Img& kernel,
                                     const int stride,
                                     const int padding, const bool verbose) {
@@ -12,31 +15,15 @@ MatrixXf Matrices::CrossCorrelation(const Img& image, const Img& kernel,
     PrintDims("Image", image);
     PrintDims("Kernel", kernel);
   }
-  Eigen::MatrixXf mat = CrossCorrelate(image[0], kernel[0], stride, padding,
-                                       verbose);
+  Eigen::MatrixXf mat = std::move(CrossCorrelate(
+      image[0], kernel[0], stride, padding,
+      verbose));
   for (int channel = 0; channel < kernel.size(); channel++) {
-    mat += CrossCorrelate(image[channel], kernel[channel], stride, padding,
+    mat += CrossCorrelate(image[channel], kernel[channel], stride,
+                          padding,
                           verbose);
   }
   return mat;
-}
-
-float Matrices::FrobeniusInner(const MatrixXf& input, const MatrixXf& kernel) {
-  if (kernel.rows() != input.rows() || kernel.cols() != input.cols()) {
-    throw std::invalid_argument(
-        "Input size of (" + std::to_string(input.rows()) + ", " +
-        std::to_string(input.cols()) + ") does not match input kernel size of ("
-        + std::to_string(kernel.rows()) + ", " + std::to_string(kernel.cols()) +
-        ")");
-  }
-
-  float sum = 0;
-  for (int row = 0; row < kernel.rows(); row++) {
-    for (int col = 0; col < kernel.cols(); col++) {
-      sum += input(row, col) * kernel(row, col);
-    }
-  }
-  return sum;
 }
 
 void Matrices::PrintImg(const Img& matrix) {
@@ -67,18 +54,25 @@ MatrixXf Matrices::CrossCorrelate(const MatrixXf& mat, const MatrixXf& kernel,
   const int mat_sz = mat.rows();
   const int crossCorrelatedDims =
       (mat_sz + 2 * padding - kernel_sz) / stride + 1;
-  MatrixXf correlated = MatrixXf::Zero(crossCorrelatedDims,
-                                       crossCorrelatedDims);
-  MatrixXf padded = MatrixXf::Zero(mat_sz + 2 * padding, mat_sz + 2 * padding);
+  if (padded.rows() != mat_sz + 2 * padding) {
+    padded = MatrixXf::Zero(mat_sz + 2 * padding, mat_sz + 2 * padding);
+  } else {
+    padded.setZero();
+  }
+  if (output.rows() != crossCorrelatedDims) {
+    output = Eigen::MatrixXf::Zero(crossCorrelatedDims, crossCorrelatedDims);
+  } else {
+    output.setZero();
+  }
   padded.block(padding, padding, mat_sz, mat_sz) = mat;
   for (int row = 0; row < crossCorrelatedDims; row++) {
     for (int col = 0; col < crossCorrelatedDims; col++) {
-      correlated(row, col) = FrobeniusInner(
+      output(row, col) = FrobeniusInner(
           padded.block(row * stride, col * stride, kernel_sz, kernel_sz),
           kernel);
     }
   }
-  return correlated;
+  return output;
 }
 
 Eigen::VectorXf Matrices::Flatten(const Img& convImg) {
