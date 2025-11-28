@@ -69,7 +69,7 @@ static void trainDense() {
 static void trainConv() {
   const std::vector<ClassifiedImg> train =
       Dataset::ReadData(
-          "/Users/yasen/CLionProjects/ManualConvNet/Data/train.csv", 30);
+          "/Users/yasen/CLionProjects/ManualConvNet/Data/train.csv", 1);
 
   ConvNet net;
   net.AddLayer(std::make_unique<ConvLayer>(ConvLayer(1, 3, 3, 1, 0)));
@@ -78,21 +78,12 @@ static void trainConv() {
   net.AddLayer(std::make_unique<ConvLayer>(ConvLayer(27, 10, 3, 1, 0)));
   net.AddLayer(std::make_unique<DenseLayer>(DenseLayer(10 * 20 * 20, 10)));
   net.AddLayer(std::make_unique<SoftmaxLayer>(SoftmaxLayer(10)));
-  net.Backprop(Img{train[0].img}, train[0].one_hot,
-               MLConstants::LinearConstants::LEARNING_RATE);
+  for (int iter = 0; iter < 5; iter++) {
+    net.Backprop(Img{train[0].img}, train[0].one_hot,
+                 MLConstants::LinearConstants::LEARNING_RATE);
+  }
 }
 
 int main() {
-  const std::vector<ClassifiedImg> train =
-      Dataset::ReadData(
-          "/Users/yasen/CLionProjects/ManualConvNet/Data/train.csv", 1);
-
-  Eigen::MatrixXf corner_kernel(3, 3);
-  corner_kernel <<
-      1, 4, 1,
-      4, -20, 4,
-      1, 4, 1;
-  Eigen::MatrixXf result = Matrices::CrossCorrelate(
-      train[0].img, corner_kernel, 1, 0, false);
-  Visualizer::display("Result", result);
+  trainConv();
 }

@@ -30,13 +30,12 @@ void ConvLayer::PrintInfo() const {
 }
 
 void ConvLayer::Forward(const Img& input) {
-  for (size_t i = 0; i < kernels_.size(); i++) {
-    if (kernels_.size() == 10) {
-      std::cout << "on kernel " << i << std::endl;
-    }
-    activation_[i] = Matrices::CrossCorrelation(input, kernels_[i], stride_,
-                                                padding_, false);
-    activation_[i].array() += biases_(i);
+  for (size_t out_channels = 0; out_channels < kernels_.size(); out_channels
+       ++) {
+    activation_[out_channels] = Matrices::CrossCorrelation(
+        input, kernels_[out_channels], stride_,
+        padding_, false);
+    activation_[out_channels].array() += biases_(out_channels);
   }
 }
 
@@ -106,4 +105,3 @@ void ConvLayer::Backward(const Img& prevActivation, const Img& nextDerivative,
     }
   }
 }
-

@@ -81,3 +81,28 @@ MatrixXf Matrices::CrossCorrelate(const MatrixXf& mat, const MatrixXf& kernel,
   return correlated;
 }
 
+Eigen::VectorXf Matrices::Flatten(const Img& convImg) {
+  const int flattened_size = convImg[0].cols() * convImg[0].
+                             rows();
+  Eigen::VectorXf flattened(flattened_size * convImg.size());
+  int offset = 0;
+  for (const Eigen::MatrixXf& channel : convImg) {
+    flattened.segment(offset, channel.size()) = Eigen::Map<const
+      Eigen::VectorXf>(
+        channel.data(), channel.size());
+    offset += channel.size();
+  }
+  return flattened;
+}
+
+Img Matrices::Unflatten(const Eigen::VectorXf& vec,
+                        const int channels) {
+  const int channel_size = vec.size() / channels;
+  const int new_dim = sqrt(channel_size);
+  Img unflattened(channels);
+  for (int i = 0; i < channels; i++) {
+    unflattened[i] = Eigen::Map<const
+      Eigen::MatrixXf>(vec.data() + i * channel_size, new_dim, new_dim);
+  }
+  return unflattened;
+}

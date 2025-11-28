@@ -39,6 +39,10 @@ public:
                    2.0 / MLConstants::ConvConstants::INPUT_SIZE));
     return kernel;
   }
+
+  static Eigen::VectorXf Flatten(const Img& convImg);
+
+  static Img Unflatten(const Eigen::VectorXf& vec, int channels);
 };
 
 #endif //MATRICES_H
