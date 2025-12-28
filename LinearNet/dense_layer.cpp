@@ -14,7 +14,7 @@ void ReLU(Eigen::VectorXf& input) {
 
 DenseLayer::DenseLayer(int input_size, int output_size) : weights_(
       Eigen::MatrixXf::Random(output_size, input_size)),
-  biases_(Eigen::VectorXf::Random(output_size)),
+  biases_(Eigen::VectorXf::Random(output_size).cwiseAbs()),
   previous_derivative_(input_size), activation_(output_size) {
   weights_ *= sqrt(2.0 / MLConstants::LinearConstants::INPUT_SIZE);
 }
@@ -24,13 +24,18 @@ void DenseLayer::Forward(const Eigen::VectorXf& input) {
   ReLU(activation_);
 }
 
-void DenseLayer::Backward(const Eigen::VectorXf& prevActivation,
-                          const Eigen::VectorXf& nextDerivative,
-                          const float learningRate) {
-  weights_ += nextDerivative * prevActivation.transpose();
-  biases_ += nextDerivative;
-  previous_derivative_ = (weights_.transpose() * nextDerivative).array() *
-                         (prevActivation.array() > 0).cast<float>();
+void PrintDims(const std::string& name, const Eigen::MatrixXf& mat) {
+  std::cout << name << ":\nRows: " << mat.rows() << "\tCols: " << mat.cols() <<
+      std::endl;
+}
+
+void DenseLayer::Backward(const Eigen::VectorXf& prev_activation,
+                          const Eigen::VectorXf& next_derivative) {
+  const Eigen::MatrixXf relu_derivative = (activation_.array() > 0).cast<
+                                            float>() * next_derivative.array();
+  previous_derivative_ = weights_.transpose() * relu_derivative;
+  weights_ += relu_derivative * prev_activation.transpose();
+  biases_ += relu_derivative;
 }
 
 void DenseLayer::PrintInfo() const {

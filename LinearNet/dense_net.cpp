@@ -29,11 +29,10 @@ float DenseNet::Backprop(const Eigen::VectorXf& input,
   const Eigen::VectorXf loss_derivative = (pred - expected) * learning_rate;
   layers_[layers_.size() - 1]->Backward(
       layers_[layers_.size() - 2]->Activation(),
-      loss_derivative, learning_rate);
+      loss_derivative);
   for (int i = layers_.size() - 2; i >= 0; i--) {
     layers_[i]->Backward((i == 0) ? input : layers_.at(i - 1)->Activation(),
-                         layers_.at(i + 1)->PreviousDerivative(),
-                         learning_rate);
+                         layers_.at(i + 1)->PreviousDerivative());
   }
   const float cross_entropy_loss = -1 * (expected.array() * log(pred.array())).
                                    sum();

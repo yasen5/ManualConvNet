@@ -34,10 +34,9 @@ void SoftmaxLayer::SetWeights(Eigen::MatrixXf& new_weights) {
   std::cerr << "Setting weights for a softmax layer!" << std::endl;
 }
 
-void SoftmaxLayer::Backward(const Eigen::VectorXf& prevActivation,
-                            const Eigen::VectorXf& nextDerivative,
-                            float learningRate) {
-  previous_derivative_ = -1 * nextDerivative;
+void SoftmaxLayer::Backward(const Eigen::VectorXf& prev_activation,
+                            const Eigen::VectorXf& next_derivative) {
+  previous_derivative_ = -1 * next_derivative;
   // TODO find out why this needs to be negative
   // THE ABOVE CODE ASSUMES THAT THE NET IS APPLYING CROSS-ENTROPY LOSS
   // If that loss function is not used, and the resulting derivative isn't

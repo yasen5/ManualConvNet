@@ -12,21 +12,20 @@ class DenseLayer final : public LinearLayer {
 public:
   DenseLayer(int input_size, int output_size);
 
-  void Forward(const Eigen::VectorXf &input) override;
+  void Forward(const Eigen::VectorXf& input) override;
 
-  void Backward(const Eigen::VectorXf &prevActivation,
-                const Eigen::VectorXf &nextDerivative,
-                float learningRate) override;
+  void Backward(const Eigen::VectorXf& prevActivation,
+                const Eigen::VectorXf& nextDerivative) override;
 
-  const Eigen::VectorXf &Activation() override { return activation_; }
+  const Eigen::VectorXf& Activation() override { return activation_; }
 
-  const Eigen::VectorXf &PreviousDerivative() override {
+  const Eigen::VectorXf& PreviousDerivative() override {
     return previous_derivative_;
   }
 
   void PrintInfo() const override;
 
-  void SetWeights(Eigen::MatrixXf &new_weights) override;
+  void SetWeights(Eigen::MatrixXf& new_weights) override;
 
 private:
   Eigen::MatrixXf weights_;

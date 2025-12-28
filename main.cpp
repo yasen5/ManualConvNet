@@ -86,5 +86,9 @@ static void trainConv() {
 }
 
 int main() {
-  trainConv();
+  // const std::vector<ClassifiedImg> train =
+  //     Dataset::ReadData(
+  //         "/Users/yasen/CLionProjects/ManualConvNet/Data/train.csv", 10);
+  // Visualizer::display("Digit", train[1].img);
+  trainDense();
 }

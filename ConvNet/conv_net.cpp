@@ -34,17 +34,17 @@ float ConvNet::Backprop(const Img& input, const Eigen::VectorXf& expected,
                                    sum();
   connected_layers_[connected_layers_.size() - 1]->Backward(
       connected_layers_[connected_layers_.size() - 2]->Activation(),
-      loss, learning_rate);
+      loss);
   for (int i = connected_layers_.size() - 2; i >= 0; i--) {
     if (i != 0) {
       connected_layers_[i]->Backward(
           connected_layers_[i - 1]->Activation(),
-          connected_layers_[i + 1]->PreviousDerivative(), learning_rate);
+          connected_layers_[i + 1]->PreviousDerivative());
     } else {
       connected_layers_[i]->Backward(
           Matrices::Flatten(
               conv_layers_[conv_layers_.size() - 1]->Activation()),
-          connected_layers_[i + 1]->PreviousDerivative(), learning_rate);
+          connected_layers_[i + 1]->PreviousDerivative());
     }
   }
   const int last_conv_channels = conv_layers_[conv_layers_.size() - 1]->
